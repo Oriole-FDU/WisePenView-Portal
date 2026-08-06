@@ -1,0 +1,131 @@
+:root {
+  --app-font-family:
+    'PingFang SC',
+    'Noto Sans SC Variable',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    sans-serif;
+  --font-sans: var(--app-font-family);
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+
+  --portal-accent: #17a06e;
+  --portal-accent-deep: #177a5b;
+  --portal-slate: #64726b;
+  --portal-lime: #6fe3ab;
+  --portal-lime-deep: #50c98b;
+  --portal-canvas: #f6fbf8;
+  --portal-ink: #14211c;
+
+  --accent: var(--portal-accent);
+  --accent-hover: #148f5f;
+  --accent-foreground: #ffffff;
+  --accent-soft: color-mix(in srgb, var(--portal-accent) 12%, #ffffff);
+  --accent-soft-hover: color-mix(in srgb, var(--portal-accent) 20%, #ffffff);
+  --accent-softer: color-mix(in srgb, var(--portal-accent) 8%, #ffffff);
+  --accent-border: color-mix(in srgb, var(--portal-accent) 32%, var(--portal-slate));
+  --background: var(--portal-canvas);
+  --canvas: var(--portal-canvas);
+  --foreground: var(--portal-ink);
+  --surface: #ffffff;
+  --muted: #64726b;
+  --text-tertiary: color-mix(in srgb, var(--portal-ink) 38%, #ffffff);
+  --border: rgba(20, 33, 28, 0.16);
+  --border-light: rgba(20, 33, 28, 0.12);
+  --header-surface: #ffffff;
+  --radius-md: 6px;
+  --space-sm: 12px;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --scrollbar-thumb: rgba(23, 160, 110, 0.2);
+  --scrollbar-thumb-hover: rgba(23, 160, 110, 0.32);
+  --scrollbar-track: transparent;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 0;
+}
+
+html {
+  overflow: hidden;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+  font-family: var(--app-font-family);
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--foreground);
+  background: var(--background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow: hidden;
+  font-family: var(--app-font-family);
+  color: var(--foreground);
+  background: var(--background);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+#root {
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#root :is(input, textarea, [contenteditable='true'], [contenteditable=''], [role='textbox'], pre, code, kbd, samp) {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+#root img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--scrollbar-thumb);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  background-clip: content-box;
+}

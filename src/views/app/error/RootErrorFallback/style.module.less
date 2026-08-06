@@ -1,0 +1,84 @@
+.root {
+  display: flex;
+  min-height: 100dvh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  box-sizing: border-box;
+  background: var(--surface);
+  color: var(--foreground);
+  font-family: var(--font-sans, var(--app-font-family));
+}
+
+.content {
+  width: min(100%, 560px);
+  text-align: center;
+}
+
+.brand {
+  margin-bottom: 28px;
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+.title {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.description {
+  margin: 16px auto 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.errorId {
+  margin: 12px 0 0;
+  color: var(--text-tertiary);
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: var(--radius-md, 6px);
+  font: inherit;
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.primaryButton {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.secondaryButton {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 2px;
+}
