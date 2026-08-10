@@ -61,17 +61,17 @@ const PARAMS = {
   swingAmp: 0.58, // SWING_AMP (rad)
   swingFreq: 16, // SWING_FREQ (rad/s)
   swingDecay: 4.5, // SWING_DECAY (1/s)
-  transmission: 0.84,
-  refractStrength: 0.2,
+  transmission: 0.9,
+  refractStrength: 0.15, // 折射扭曲减弱，底透过更清晰（保留）
   fresnelPower: 3,
-  iridStrength: 0.6,
+  iridStrength: 0.5,
   iridCycles: 3,
   iridShift: 0,
   iridPower: 2.5,
-  iridBody: 0.12,
-  fluidStrength: 1,
-  tintStrength: 1, // 静止近白，hover 揭示品牌色（参考 u_tintStrength 1.0）
-  tintGlow: 0.15,
+  iridBody: 0.1,
+  fluidStrength: 0.85,
+  tintStrength: 0.75, // 轻量柔化：hover 品牌色揭示更淡，更贴近白玻璃；0.75 加回 25% 白稀释
+  tintGlow: 0.18, // 揭示柱加色提亮，鲜亮不发灰（轻量柔化微降）
   tintWrap: 10, // 梯度沿螺旋循环 10 次
 } as const;
 
@@ -98,14 +98,14 @@ const SCROLL_TRAVEL_TURNS = 1.2; // 带完全滚过视口时相位推进的圈�
 const SCROLL_LERP = 5;
 
 /** 品牌梯度（仅色系换品牌：参考是霓虹粉→青，换成 WisePen 薄荷/青/墨绿）。
- * 调亮为清新浅薄荷——hover 揭示的是玻璃体上的品牌色，太深会显得沉；
- * 最暗端 #4ab98d（柔青绿）不再落向墨黑，整体保持「清新自然」。 */
+ * 薄荷偏蓝（H 161→166，中段水薄荷）：明度 V82~98 / 饱和 S10→62 保持温和档不变，
+ * 仅把 hue 从"春绿 H150"偏蓝到 aqua-mint——hover 揭示玻璃体上的品牌色，不发灰、不刺眼。 */
 const GRADIENT_STOPS: Array<[number, string]> = [
-  [0.0, '#eefcf5'],
-  [0.3, '#bcf2db'],
-  [0.5, '#86e4be'],
-  [0.8, '#5fcea3'],
-  [1.0, '#4ab98d'],
+  [0.0, '#e1faf2'],
+  [0.3, '#a7f2dc'],
+  [0.5, '#75ebc9'],
+  [0.8, '#5fe3c0'],
+  [1.0, '#4fd1b3'],
 ];
 
 type HelixCfg = {
@@ -222,19 +222,19 @@ uniform vec2 u_aspect;
 void main() {
   vec2 p = vec2(vUv.x, 1.0 - vUv.y);
   float d = smoothstep(0.0, 1.0, p.x * 0.5 + p.y * 0.5);
-  vec3 top = vec3(0.80, 0.93, 0.87); // 顶部也保薄荷，避免浅色页面吞掉磨砂柱
-  // 中段与深底一起降饱和：底部行 d∈[0,0.5] 主要由 mid 主导，mid 不调会继续偏艳
-  vec3 mid = vec3(0.50, 0.80, 0.67);
-  // 深绿降饱和（0.16→0.22 抬 R / 0.66→0.60 降 G，饱和度 ≈0.63），避免荧光感
-  vec3 deep = vec3(0.22, 0.60, 0.44);
+  vec3 top = vec3(0.80, 0.94, 0.91); // 顶部保蓝薄荷，避免浅色页面吞掉磨砂柱
+  // 中段与深底同步偏蓝（B 抬升），与 hover 揭示的蓝薄荷梯度保持一致
+  vec3 mid = vec3(0.43, 0.80, 0.71);
+  // 深档偏蓝薄荷（R 下压 / B 抬升，H≈166），鲜亮不灰
+  vec3 deep = vec3(0.24, 0.66, 0.56);
   vec3 color = mix(top, mid, d);
   color = mix(color, deep, smoothstep(0.35, 0.95, d));
 
   vec2 c = (p - vec2(0.28, 0.58)) * vec2(u_aspect.x, 1.0);
-  color += vec3(0.12, 0.58, 0.41) * exp(-dot(c, c) * 4.0) * 0.28;
+  color += vec3(0.12, 0.58, 0.50) * exp(-dot(c, c) * 4.0) * 0.28;
 
   c = (p - vec2(0.76, 0.42)) * vec2(u_aspect.x, 1.0);
-  color += vec3(0.44, 0.86, 0.63) * exp(-dot(c, c) * 4.0) * 0.32;
+  color += vec3(0.44, 0.86, 0.75) * exp(-dot(c, c) * 4.0) * 0.32;
 
   gl_FragColor = vec4(color, 1.0);
 }
@@ -301,7 +301,7 @@ varying vec3 vWorldPos;
 varying vec2 vScreenUv;
 varying float vTintOffset;
 
-const float SWING_AMP = 0.58;
+const float SWING_AMP = 0.45;
 const float SWING_FREQ = 16.0;
 const float SWING_DECAY = 4.5;
 
@@ -376,13 +376,13 @@ varying float vTintOffset;
 const float PI = 3.141592653589793;
 
 const vec3 LIGHT_DIR = vec3(0.4, 1.0, 0.35);
-const float AMBIENT_MIX = 0.6;
+const float AMBIENT_MIX = 0.66;
 
 const float FLUID_GATE_MAX = 0.2;
-const float TINT_OPACITY_DROP = 0.6;
+const float TINT_OPACITY_DROP = 0.45; // hover 保持清透：亮 trans 主导但仍让回 body，避免 tint 过饱和
 
-const float SHEEN_MIX = 0.35;
-const float RIM_LIFT = 0.06;
+const float SHEEN_MIX = 0.22; // 边缘高光温和档（轻量柔化微降），配合薄荷高光去灰不增灰
+const float RIM_LIFT = 0.05;
 
 vec3 iridescence(float t) {
   return 0.5 + 0.5 * cos(2.0 * PI * (t + vec3(0.0, 0.33, 0.67)));
@@ -391,8 +391,8 @@ vec3 iridescence(float t) {
 vec3 proceduralEnv(vec3 dir) {
   float t = clamp(dir.y * 0.5 + 0.5, 0.0, 1.0);
   vec3 ground = vec3(0.12, 0.12, 0.14);
-  vec3 horizon = vec3(0.60, 0.62, 0.68);
-  vec3 sky = vec3(0.95, 0.97, 1.0);
+  vec3 horizon = vec3(0.56, 0.72, 0.68); // 蓝薄荷：边缘反光呈品牌蓝薄荷，而非中性灰
+  vec3 sky = vec3(0.92, 0.99, 0.97); // 淡蓝白
   return t < 0.5 ? mix(ground, horizon, t * 2.0) : mix(horizon, sky, (t - 0.5) * 2.0);
 }
 
@@ -403,7 +403,7 @@ void main() {
   vec3 V = normalize(cameraPosition - vWorldPos);
 
   float diffuse = max(dot(N, normalize(LIGHT_DIR)), 0.0);
-  vec3 ambLo = vec3(0.45, 0.46, 0.5);
+  vec3 ambLo = vec3(0.50, 0.52, 0.56); // 环境光去灰提亮（微降），tint 不再被压暗约 40%
   vec3 ambient = mix(ambLo, vec3(1.0), N.y * 0.5 + 0.5);
   vec3 lighting = ambient * AMBIENT_MIX + diffuse * (1.0 - AMBIENT_MIX);
 
@@ -418,7 +418,7 @@ void main() {
   // 磨砂透射：强折射采样模糊渐变底
   vec2 buv = vScreenUv + N.xy * u_refractStrength;
   vec3 trans = texture2D(u_tBackdrop, buv).rgb;
-  trans = mix(trans, tint, reveal);
+  trans = mix(trans, tint, reveal * u_tintStrength);
   vec3 frosted = mix(body, trans, u_transmission * (1.0 - TINT_OPACITY_DROP * reveal));
 
   float edge = clamp(1.0 - max(dot(N, V), 0.0), 0.0, 1.0);
@@ -428,7 +428,7 @@ void main() {
   vec3 color = mix(frosted, sheen, fres * SHEEN_MIX);
   color += fres * RIM_LIFT;
 
-  color += tint * reveal * u_tintGlow;
+  color += tint * reveal * u_tintStrength * u_tintGlow;
 
   float phase = edge * u_iridCycles + N.y * 0.5 + u_iridShift;
   vec3 irid = iridescence(phase);

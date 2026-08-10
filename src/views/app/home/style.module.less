@@ -60,13 +60,14 @@
   z-index: 0; // 位于所有 section 之下（band 内 section 均已 z-index:1）
   pointer-events: none; // 绝不拦截交互
   display: block;
-  opacity: 0.8; // 中等存在感（磨砂柔化由 shader 内透射/折射实现，不再用 CSS blur）
+  opacity: 0.6; // 轻量柔化：全局存在感 -25%（磨砂柔化由 shader 内透射/折射实现，不再用 CSS blur）
   // 顶/底边缘渐隐：柱在 shader 内为不透明（alpha 恒 1，重叠不累加白斑），
   // 带边缘软过渡交给 CSS mask（含 #ai 顶 / #faq 底 及两端回绕缓冲）。
-  // 底部渐隐从 75% 起拉长到 100%：螺旋最底一圈因倾斜只稀疏地触及带缘，
-  // 短渐隐会在带底露出硬截止，加长渐隐让整圈溶解于页面背景再自然消失。
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 10%, #000 75%, transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0, #000 10%, #000 75%, transparent 100%);
+  // 底部渐隐提前到 65% 起拉长到 100%：带体 22° 倾斜后底部柱在 ~95% 处即自然
+  // 结束（不触 canvas 底边），75% 起渐隐大部分落在空白画布上、末端仍残留约 20%
+  // 亮度造成硬截止；提前起点让实际末端进入充分渐隐区，整圈平滑溶解于页面背景。
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 10%, #000 65%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 10%, #000 65%, transparent 100%);
   // top / height 由组件按 #ai 顶 → #faq 底 测量后写入 inline style
 }
 
