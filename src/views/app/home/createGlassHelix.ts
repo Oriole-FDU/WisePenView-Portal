@@ -95,7 +95,6 @@ const BLUR_ITERATIONS = 2;
 const KERNEL_RADIUS = 11; // 23-tap，σ=radius/3
 
 const SCROLL_TRAVEL_TURNS = 1.2; // 带完全滚过视口时相位推进的圈数
-const SCROLL_LERP = 5;
 
 /** 品牌梯度（仅色系换品牌：参考是霓虹粉→青，换成 WisePenView aqua）。
  * 与新 logo / 加载动画保持一致：hover 揭示清新浅青，最暗端使用 aqua 主色 #248286。 */
@@ -1340,14 +1339,14 @@ export default function createGlassHelix(
 
   /* ------------------------------ frame loop ------------------------------- */
 
-  function updateScroll(delta: number) {
+  function updateScroll() {
     const progress = MathUtils.clamp(
       (scrollRoot.scrollTop + viewportH - bandTopInContent) / (bandH + viewportH),
       0,
       1
     );
-    const targetPhase = progress * SCROLL_TRAVEL_TURNS * count;
-    phase = MathUtils.damp(phase, targetPhase, SCROLL_LERP, delta);
+    // 滚动位置直接映射到螺旋相位，避免二次缓动造成停滚后继续追赶、抢走注意力。
+    phase = progress * SCROLL_TRAVEL_TURNS * count;
     if (Math.abs(phase - writtenPhase) > 1e-3) {
       writeHelixTransforms(phase, barH, helixCfg, positions, rotations, e, q);
       (geometry.attributes.aPos as InstancedBufferAttribute).needsUpdate = true;
@@ -1358,7 +1357,7 @@ export default function createGlassHelix(
 
   function step(delta: number, elapsed: number) {
     updatePointerOverBand();
-    updateScroll(delta);
+    updateScroll();
     updateStrike(elapsed);
     if (fluidEnabled) fluidSolve(delta, elapsed);
 
