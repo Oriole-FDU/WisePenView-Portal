@@ -104,7 +104,6 @@ const enUSShell = {
       titleB: 'keep growing.',
       lead: 'Class notes, research materials, paper writing, and team collaboration — all in one AI workspace. From recording and understanding to creating, build an AI Agent that is truly yours.',
       webCta: 'Web',
-      clientCta: 'Desktop',
       searchPlaceholder: 'Search your knowledge',
       newNote: '+ New note',
       mySpace: 'My space',
@@ -266,7 +265,7 @@ const enUSShell = {
         },
         {
           q: 'Which platforms are supported?',
-          a: 'Both web and desktop apps, with notes and materials synced across devices so you can pick up where you left off.',
+          a: 'WisePen currently focuses on the web app, with notes and materials synced in the cloud so you can keep working from your browser.',
         },
       ],
     },
@@ -274,7 +273,7 @@ const enUSShell = {
       kicker: 'YOUR KNOWLEDGE, YOUR AI',
       titleA: 'Start with your first note',
       titleB: 'and build your AI knowledge system.',
-      sub: 'AI knowledge management for students and teachers. Register to start on web or desktop.',
+      sub: 'AI knowledge management for students and teachers. Register to start on the web.',
       button: 'Register for WisePen free',
     },
     footer: {

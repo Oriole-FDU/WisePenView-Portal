@@ -1,4 +1,4 @@
-import { DOWNLOAD_URL, MAIN_SITE_URL, openPortalLink } from '@/config/portalLinks';
+import { MAIN_SITE_URL, openPortalLink } from '@/config/portalLinks';
 import logoIconAqua from '@/assets/logos/logo-icon-aqua.svg';
 import { Fragment, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -217,13 +217,6 @@ function Home() {
               onClick={() => openPortalLink(MAIN_SITE_URL)}
             >
               {t('home.hero.webCta')} <span aria-hidden="true">↗</span>
-            </button>
-            <button
-              type="button"
-              className={styles.buttonGhost}
-              onClick={() => openPortalLink(DOWNLOAD_URL)}
-            >
-              {t('home.hero.clientCta')} <span aria-hidden="true">↘</span>
             </button>
           </div>
         </Reveal>

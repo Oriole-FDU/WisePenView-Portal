@@ -104,7 +104,6 @@ const zhCNShell = {
       titleB: '持续生长。',
       lead: '将课堂笔记、科研资料、论文写作与团队协作汇总在一个 AI 工作空间。从记录、理解到创作，打造真正属于你的 AI Agent。',
       webCta: '网页版',
-      clientCta: '客户端',
       searchPlaceholder: '搜索你的知识',
       newNote: '＋ 新建内容',
       mySpace: '我的空间',
@@ -253,7 +252,7 @@ const zhCNShell = {
         },
         {
           q: '支持哪些平台？',
-          a: '提供网页版与桌面客户端，笔记与资料云端同步，随时继续上一次的思考。',
+          a: 'WisePen 目前以网页版为主，笔记与资料云端同步，打开浏览器即可继续上一次的思考。',
         },
       ],
     },
@@ -261,7 +260,7 @@ const zhCNShell = {
       kicker: 'YOUR KNOWLEDGE, YOUR AI',
       titleA: '从第一篇笔记开始，',
       titleB: '建立你的 AI 知识系统。',
-      sub: '面向学生与教师的 AI 知识管理工具，注册即可在网页版或桌面客户端开始使用。',
+      sub: '面向学生与教师的 AI 知识管理工具，注册即可在网页版开始使用。',
       button: '免费注册 WisePen',
     },
     footer: {
