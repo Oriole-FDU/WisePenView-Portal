@@ -1,4 +1,4 @@
-import { MAIN_SITE_URL, openPortalLink } from '@/config/portalLinks';
+import { REGISTER_URL, openPortalLink } from '@/config/portalLinks';
 import logoIconAqua from '@/assets/logos/logo-icon-aqua.svg';
 import { Fragment, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -214,7 +214,7 @@ function Home() {
             <button
               type="button"
               className={styles.buttonPrimary}
-              onClick={() => openPortalLink(MAIN_SITE_URL)}
+              onClick={() => openPortalLink(REGISTER_URL)}
             >
               {t('home.hero.webCta')} <span aria-hidden="true">↗</span>
             </button>
@@ -653,7 +653,7 @@ function Home() {
           <button
             type="button"
             className={styles.buttonLime}
-            onClick={() => openPortalLink(MAIN_SITE_URL)}
+            onClick={() => openPortalLink(REGISTER_URL)}
           >
             {t('home.cta.button')} <span aria-hidden="true">↗</span>
           </button>

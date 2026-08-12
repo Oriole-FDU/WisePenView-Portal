@@ -1,4 +1,4 @@
-import { MAIN_SITE_URL, openPortalLink } from '@/config/portalLinks';
+import { LOGIN_URL, MAIN_SITE_URL, REGISTER_URL, openPortalLink } from '@/config/portalLinks';
 import logoIconAqua from '@/assets/logos/logo-icon-aqua.svg';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
@@ -43,15 +43,22 @@ function LandingNavbar() {
       <div className={styles.navAuth}>
         <button
           type="button"
-          className={clsx(styles.authBtn, styles.registerBtn)}
+          className={clsx(styles.authBtn, styles.homeBtn)}
           onClick={() => openPortalLink(MAIN_SITE_URL)}
+        >
+          {t('home.nav.home')}
+        </button>
+        <button
+          type="button"
+          className={clsx(styles.authBtn, styles.registerBtn)}
+          onClick={() => openPortalLink(REGISTER_URL)}
         >
           {t('home.nav.register')}
         </button>
         <button
           type="button"
           className={clsx(styles.authBtn, styles.loginBtn)}
-          onClick={() => openPortalLink(MAIN_SITE_URL)}
+          onClick={() => openPortalLink(LOGIN_URL)}
         >
           {t('home.nav.login')}
         </button>

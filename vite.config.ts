@@ -3,7 +3,11 @@ import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
 import packageJson from './package.json' with { type: 'json' };
 
-const REQUIRED_CLIENT_URL_KEYS = ['VITE_MAIN_SITE_URL', 'VITE_DOWNLOAD_URL'] as const;
+const REQUIRED_CLIENT_URL_KEYS = [
+  'VITE_MAIN_SITE_URL',
+  'VITE_LOGIN_URL',
+  'VITE_REGISTER_URL',
+] as const;
 
 function assertClientUrl(key: string, value: string, mode: string): void {
   try {

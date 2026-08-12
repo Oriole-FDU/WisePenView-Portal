@@ -95,6 +95,7 @@ const enUSShell = {
       team: 'Team Space',
       scenes: 'Scenes',
       faq: 'FAQ',
+      home: 'Home',
       register: 'Register',
       login: 'Sign in',
     },

@@ -95,6 +95,7 @@ const zhCNShell = {
       team: '团队空间',
       scenes: '使用场景',
       faq: '常见问题',
+      home: '首页',
       register: '注册',
       login: '登录',
     },
