@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">WisePen Learning Weave</title>
+  <desc id="desc">Two adaptive learning loops weave people, resources, and AI into one continuous system.</desc>
+  <g fill="none" stroke-linecap="round" stroke-width="8">
+    <path d="M17 37c6 34 26 42 33 17 7-27 28-23 33 10" stroke="#8ACACD" />
+    <path d="M17 63C23 28 43 21 50 46c7 27 28 23 33-11" stroke="#248286" />
+  </g>
+</svg>

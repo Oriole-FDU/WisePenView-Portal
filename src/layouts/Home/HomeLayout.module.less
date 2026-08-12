@@ -74,32 +74,14 @@
 .brandMark {
   width: 27px;
   height: 27px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 2px;
-  transform: rotate(-8deg);
-
-  span {
-    display: block;
-    background: var(--portal-ink);
-    border-radius: 3px 7px 3px 7px;
-
-    &:first-child {
-      grid-row: span 2;
-      background: var(--portal-lime);
-    }
-
-    &:nth-child(3) {
-      background: #afeecf;
-    }
-  }
+  display: block;
+  flex-shrink: 0;
 }
 
 .footerBrandText {
   font-size: 20px;
   font-weight: 650;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   color: var(--foreground);
 }
 

@@ -1,4 +1,5 @@
 import LandingNavbar from '@/layouts/Home/_components/LandingNavbar';
+import logoIconAqua from '@/assets/logos/logo-icon-aqua.svg';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import styles from './HomeLayout.module.less';
@@ -35,11 +36,7 @@ function HomeLayout() {
         <div className={styles.footerInner}>
           <div className={styles.footerBrand}>
             <div className={styles.footerBrandRow}>
-              <span className={styles.brandMark} aria-hidden="true">
-                <span />
-                <span />
-                <span />
-              </span>
+              <img className={styles.brandMark} src={logoIconAqua} alt="" aria-hidden="true" />
               <div className={styles.footerBrandText}>WisePen</div>
             </div>
             <p className={styles.footerTagline}>{t('home.footer.tagline')}</p>

@@ -27,32 +27,14 @@
 .brandMark {
   width: 27px;
   height: 27px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 2px;
-  transform: rotate(-8deg);
-
-  span {
-    display: block;
-    background: var(--portal-ink);
-    border-radius: 3px 7px 3px 7px;
-
-    &:first-child {
-      grid-row: span 2;
-      background: var(--portal-lime);
-    }
-
-    &:nth-child(3) {
-      background: #afeecf;
-    }
-  }
+  display: block;
+  flex-shrink: 0;
 }
 
 .brandText {
   font-size: 20px;
   font-weight: 650;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   color: var(--foreground);
   white-space: nowrap;
 }
@@ -107,12 +89,12 @@
 }
 
 .registerBtn {
-  background: #e9f7ef;
+  background: color-mix(in srgb, var(--portal-lime) 22%, #ffffff);
   color: var(--foreground);
-  border: 1px solid rgba(23, 160, 110, 0.2);
+  border: 1px solid rgba(36, 130, 134, 0.2);
 
   &:hover {
-    box-shadow: 0 8px 20px rgba(23, 160, 110, 0.12);
+    box-shadow: 0 8px 20px rgba(36, 130, 134, 0.12);
   }
 }
 

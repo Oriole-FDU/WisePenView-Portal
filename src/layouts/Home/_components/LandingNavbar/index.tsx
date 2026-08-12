@@ -1,4 +1,5 @@
 import { MAIN_SITE_URL, openPortalLink } from '@/config/portalLinks';
+import logoIconAqua from '@/assets/logos/logo-icon-aqua.svg';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import styles from './style.module.less';
@@ -22,11 +23,7 @@ function LandingNavbar() {
   return (
     <div className={styles.bar}>
       <div className={styles.brand}>
-        <span className={styles.brandMark} aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </span>
+        <img className={styles.brandMark} src={logoIconAqua} alt="" aria-hidden="true" />
         <span className={styles.brandText}>WisePen</span>
       </div>
 

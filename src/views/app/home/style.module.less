@@ -1,4 +1,4 @@
-// ═══ 门户页令牌（跟随 WisePen_website 门户：墨绿 + 薄荷绿 + 米白底）═══
+// ═══ 门户页令牌（跟随 WisePenView aqua：青色 + 浅青画布）═══
 @accent: var(--accent);
 @ink: var(--foreground);
 @muted: var(--muted);
@@ -13,17 +13,17 @@
 @lime: var(--portal-lime);
 @lime-deep: var(--portal-lime-deep);
 
-// 深色区块底（AI 特性 / 知识库回答卡 / 注册入口）—— 门户固定浅色，深色底沿用网站 #143027
-@deep: #143027;
-@deep-soft: #1f3d33;
-@teal: #2ea9ae;
+// 深色区块底（AI 特性 / 知识库回答卡 / 注册入口）—— 基于 WisePenView aqua 深阶延展。
+@deep: #1c3f40;
+@deep-soft: #135658;
+@teal: #60b5b9;
 @on-deep: rgba(255, 255, 255, 0.94);
 @on-deep-muted: rgba(255, 255, 255, 0.62);
 
 // ── preview 内固定色（白底小界面，随网站配色）──
-@preview-ink: #14211c;
-@preview-muted: #64726b;
-@preview-line: rgba(20, 33, 28, 0.12);
+@preview-ink: #1c3f40;
+@preview-muted: #647478;
+@preview-line: rgba(28, 63, 64, 0.12);
 
 .shell() {
   width: min(1240px, calc(100% - 64px));
@@ -36,17 +36,17 @@
   box-sizing: border-box;
   background-color: @canvas;
   background-image:
-    radial-gradient(900px 700px at 78% 38%, rgba(46, 169, 174, 0.08), transparent 60%),
-    radial-gradient(860px 660px at 18% 62%, rgba(111, 227, 171, 0.1), transparent 60%),
+    radial-gradient(900px 700px at 78% 38%, rgba(96, 181, 185, 0.1), transparent 60%),
+    radial-gradient(860px 660px at 18% 62%, rgba(138, 202, 205, 0.12), transparent 60%),
     linear-gradient(
       115deg,
-      #f9fcfb 0%,
-      #eef8f5 10%,
-      #e4f2ef 26%,
-      #ddf0f0 42%,
-      #e2f3ef 58%,
-      #ecf8f3 76%,
-      #f8fcf9 100%
+      #fafefe 0%,
+      #f3fbfb 10%,
+      #e1f7f8 26%,
+      #cef1f2 42%,
+      #e1f7f8 58%,
+      #f3fbfb 76%,
+      #fafefe 100%
     );
   color: @ink;
   font-family: @font;
@@ -165,26 +165,8 @@
 .brandMark {
   width: 27px;
   height: 27px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 2px;
-  transform: rotate(-8deg);
-
-  span {
-    display: block;
-    background: @ink;
-    border-radius: 3px 7px 3px 7px;
-
-    &:first-child {
-      grid-row: span 2;
-      background: @lime;
-    }
-
-    &:nth-child(3) {
-      background: #afeecf;
-    }
-  }
+  display: block;
+  flex-shrink: 0;
 }
 
 // ═══ 首屏 ═══
@@ -279,13 +261,13 @@
 }
 
 .buttonPrimary {
-  background: #e9f7ef;
+  background: color-mix(in srgb, @lime 22%, #ffffff);
   color: @ink;
-  border: 1px solid rgba(23, 160, 110, 0.2);
-  box-shadow: 0 10px 28px rgba(23, 160, 110, 0.09);
+  border: 1px solid rgba(36, 130, 134, 0.2);
+  box-shadow: 0 10px 28px rgba(36, 130, 134, 0.09);
 
   &:hover {
-    box-shadow: 0 16px 34px rgba(23, 160, 110, 0.14);
+    box-shadow: 0 16px 34px rgba(36, 130, 134, 0.14);
   }
 }
 
@@ -827,11 +809,11 @@
   display: flex;
   gap: 15px;
   padding: 24px 26px;
-  background: #143027;
+  background: @deep;
   color: #fff;
   border-radius: 14px;
-  border: 1px solid rgba(20, 48, 39, 0.16);
-  box-shadow: 0 18px 40px rgba(20, 48, 39, 0.16);
+  border: 1px solid rgba(28, 63, 64, 0.16);
+  box-shadow: 0 18px 40px rgba(28, 63, 64, 0.16);
 
   b {
     display: block;
@@ -855,7 +837,7 @@
   display: grid;
   place-items: center;
   border-radius: 9px;
-  background: #1f3d33;
+  background: @deep-soft;
   color: @lime;
   font-size: 12px;
 }
@@ -1181,7 +1163,7 @@
   gap: 5px;
 
   span {
-    background: #1f3d33;
+    background: @deep-soft;
     border-radius: 5px;
     padding: 6px 8px;
     color: #9faaa5;

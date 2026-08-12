@@ -1,4 +1,5 @@
 import { DOWNLOAD_URL, MAIN_SITE_URL, openPortalLink } from '@/config/portalLinks';
+import logoIconAqua from '@/assets/logos/logo-icon-aqua.svg';
 import { Fragment, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import CountUp from './CountUp';
@@ -7,15 +8,9 @@ import GlassBackdrop from './GlassBackdrop';
 import Reveal from './Reveal';
 import styles from './style.module.less';
 
-/** 品牌三色块 logo（源设计 BrandMark） */
+/** WisePenView aqua 主题的正式 logo */
 function BrandMark() {
-  return (
-    <span className={styles.brandMark} aria-hidden="true">
-      <span />
-      <span />
-      <span />
-    </span>
-  );
+  return <img className={styles.brandMark} src={logoIconAqua} alt="" aria-hidden="true" />;
 }
 
 /** 滚动到门户区块（SPA 内 .root 为滚动容器，需 scrollIntoView 而非 #hash） */

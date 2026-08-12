@@ -97,15 +97,14 @@ const KERNEL_RADIUS = 11; // 23-tap，σ=radius/3
 const SCROLL_TRAVEL_TURNS = 1.2; // 带完全滚过视口时相位推进的圈数
 const SCROLL_LERP = 5;
 
-/** 品牌梯度（仅色系换品牌：参考是霓虹粉→青，换成 WisePen 薄荷/青/墨绿）。
- * 薄荷偏蓝（H 161→166，中段水薄荷）：明度 V82~98 / 饱和 S10→62 保持温和档不变，
- * 仅把 hue 从"春绿 H150"偏蓝到 aqua-mint——hover 揭示玻璃体上的品牌色，不发灰、不刺眼。 */
+/** 品牌梯度（仅色系换品牌：参考是霓虹粉→青，换成 WisePenView aqua）。
+ * 与新 logo / 加载动画保持一致：hover 揭示清新浅青，最暗端使用 aqua 主色 #248286。 */
 const GRADIENT_STOPS: Array<[number, string]> = [
-  [0.0, '#e1faf2'],
-  [0.3, '#a7f2dc'],
-  [0.5, '#75ebc9'],
-  [0.8, '#5fe3c0'],
-  [1.0, '#4fd1b3'],
+  [0.0, '#fafefe'],
+  [0.3, '#e1f7f8'],
+  [0.5, '#8acacd'],
+  [0.8, '#60b5b9'],
+  [1.0, '#248286'],
 ];
 
 type HelixCfg = {
@@ -212,8 +211,8 @@ void main() {
 `;
 
 /**
- * 品牌渐变底（磨砂透射采样的对象）：对角薄荷/青 ramp + 光斑。
- * 跨度加大（底端深薄荷→顶白）让折射/磨砂在浅色页面上读得出来，贴近参考的 vivid 底。
+ * 品牌渐变底（磨砂透射采样的对象）：对角浅青 / aqua ramp + 光斑。
+ * 跨度加大（底端 aqua 主色→顶白）让折射/磨砂在浅色页面上读得出来，贴近参考的 vivid 底。
  */
 const BG_FRAG = `
 varying vec2 vUv;
@@ -222,16 +221,14 @@ uniform vec2 u_aspect;
 void main() {
   vec2 p = vec2(vUv.x, 1.0 - vUv.y);
   float d = smoothstep(0.0, 1.0, p.x * 0.5 + p.y * 0.5);
-  vec3 top = vec3(0.80, 0.94, 0.91); // 顶部保蓝薄荷，避免浅色页面吞掉磨砂柱
-  // 中段与深底同步偏蓝（B 抬升），与 hover 揭示的蓝薄荷梯度保持一致
-  vec3 mid = vec3(0.43, 0.80, 0.71);
-  // 深档偏蓝薄荷（R 下压 / B 抬升，H≈166），鲜亮不灰
-  vec3 deep = vec3(0.24, 0.66, 0.56);
+  vec3 top = vec3(0.81, 0.95, 0.95); // 顶部也保浅青，避免浅色页面吞掉磨砂柱
+  vec3 mid = vec3(0.54, 0.79, 0.80);
+  vec3 deep = vec3(0.14, 0.51, 0.53);
   vec3 color = mix(top, mid, d);
   color = mix(color, deep, smoothstep(0.35, 0.95, d));
 
   vec2 c = (p - vec2(0.28, 0.58)) * vec2(u_aspect.x, 1.0);
-  color += vec3(0.12, 0.58, 0.50) * exp(-dot(c, c) * 4.0) * 0.28;
+  color += vec3(0.38, 0.71, 0.73) * exp(-dot(c, c) * 4.0) * 0.28;
 
   c = (p - vec2(0.76, 0.42)) * vec2(u_aspect.x, 1.0);
   color += vec3(0.44, 0.86, 0.75) * exp(-dot(c, c) * 4.0) * 0.32;
