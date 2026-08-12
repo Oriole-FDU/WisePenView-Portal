@@ -55,6 +55,14 @@ function HomeLayout() {
             ))}
           </div>
 
+          <div className={styles.footerNotes}>
+            <p>{t('home.footer.funding')}</p>
+            <p>
+              {t('home.footer.contactPrefix')}{' '}
+              <a href="mailto:wisepen-service@oriole.cn">wisepen-service@oriole.cn</a>
+            </p>
+          </div>
+
           <div className={styles.footerBottom}>
             <span>{t('home.footer.copyright')}</span>
             <div>

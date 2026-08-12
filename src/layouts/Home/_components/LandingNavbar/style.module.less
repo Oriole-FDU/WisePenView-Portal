@@ -69,6 +69,10 @@
 }
 
 .authBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   min-width: 50px;
   padding: 10px 15px;
   border-radius: 99px;
@@ -77,6 +81,7 @@
   line-height: 1;
   text-align: center;
   cursor: pointer;
+  text-decoration: none;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
@@ -86,6 +91,10 @@
   &:hover {
     transform: translateY(-1px);
   }
+}
+
+.authBtn svg {
+  flex-shrink: 0;
 }
 
 .homeBtn {
@@ -120,6 +129,13 @@
   }
 }
 
+.githubBtn {
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(10px);
+  color: var(--foreground);
+}
+
 @media (max-width: 960px) {
   .bar {
     grid-template-columns: 1fr auto;
@@ -147,5 +163,9 @@
     min-width: auto;
     padding: 8px 10px;
     font-size: 12px;
+  }
+
+  .githubBtn span {
+    display: none;
   }
 }

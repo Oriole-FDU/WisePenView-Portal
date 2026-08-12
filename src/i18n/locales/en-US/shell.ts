@@ -279,6 +279,9 @@ const enUSShell = {
     },
     footer: {
       tagline: 'The AI workspace where knowledge keeps growing',
+      github: 'GitHub',
+      funding: 'Oriole Studio is funded by Fudan University.',
+      contactPrefix: 'Contact the developers:',
       privacy: 'Privacy Policy',
       terms: 'Terms of Service',
       copyright: '© 2026 WisePen. All rights reserved.',

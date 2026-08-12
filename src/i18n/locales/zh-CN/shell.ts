@@ -266,6 +266,9 @@ const zhCNShell = {
     },
     footer: {
       tagline: '让知识持续生长的 AI 工作空间',
+      github: 'GitHub',
+      funding: 'Oriole 工作室是复旦大学软件工程 CodeWisdom 实验室管理的组织。项目得到了来自复旦大学计算与智能创新学院、外国语言文学学院的资金资助。',
+      contactPrefix: '联系开发者：',
       privacy: '隐私政策',
       terms: '用户协议',
       copyright: '© 2026 WisePen. All rights reserved.',
