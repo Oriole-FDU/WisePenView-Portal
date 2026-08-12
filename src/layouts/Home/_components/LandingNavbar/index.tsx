@@ -39,6 +39,7 @@ function LandingNavbar() {
       <div className={styles.brand}>
         <img className={styles.brandMark} src={logoIconAqua} alt="" aria-hidden="true" />
         <span className={styles.brandText}>WisePen</span>
+        <span className={styles.betaTag}>内测</span>
       </div>
 
       <nav className={styles.navLinks} aria-label={t('home.navAria')}>
@@ -55,16 +56,6 @@ function LandingNavbar() {
       </nav>
 
       <div className={styles.navAuth}>
-        <a
-          className={clsx(styles.authBtn, styles.githubBtn)}
-          href="https://github.com/Oriole-FDU/WisePen"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="GitHub"
-        >
-          <IconGitHub />
-          <span>{t('home.footer.github')}</span>
-        </a>
         <button
           type="button"
           className={clsx(styles.authBtn, styles.homeBtn)}
@@ -86,6 +77,16 @@ function LandingNavbar() {
         >
           {t('home.nav.login')}
         </button>
+        <a
+          className={clsx(styles.authBtn, styles.githubBtn)}
+          href="https://github.com/Oriole-FDU/WisePen"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="GitHub"
+        >
+          <IconGitHub />
+          <span>{t('home.footer.github')}</span>
+        </a>
       </div>
     </div>
   );
