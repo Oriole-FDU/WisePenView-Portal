@@ -309,9 +309,18 @@
   box-shadow:
     0 45px 100px rgba(41, 67, 55, 0.19),
     0 3px 8px rgba(30, 50, 41, 0.08);
-  overflow: hidden;
   transform: perspective(1500px) rotateX(2deg);
   color: @preview-ink;
+
+  &[data-fading='true'] {
+    opacity: 0;
+    transition: opacity 0.26s ease;
+  }
+}
+
+.appWindowInner {
+  overflow: hidden;
+  border-radius: inherit;
 }
 
 .appBar {
@@ -367,284 +376,215 @@
   font-size: 9px;
 }
 
-.appBody {
+// ═══ Hero：AI 聊天对话界面（ChatPanel 风格）═══
+.chatLayout {
   height: 485px;
   display: grid;
-  grid-template-columns: 170px 1fr 260px;
+  grid-template-columns: 168px 1fr;
 }
 
-// 侧边栏
-.sidebar {
-  padding: 14px 12px;
+// 左侧会话列表
+.conversationList {
+  padding: 12px 10px;
   border-right: 1px solid @preview-line;
   background: #fafbf9;
   font-size: 9px;
   color: #737c78;
-
-  p {
-    font-size: 8px;
-    color: #a0a7a3;
-    margin: 16px 8px 7px;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.newNote {
-  height: 30px;
+.convNew {
+  height: 28px;
   border-radius: 7px;
   display: grid;
   place-items: center;
   background: @preview-ink;
   color: #fff;
   font-weight: 600;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-.sideItem {
-  padding: 8px;
-  border-radius: 6px;
+.convItem {
   display: flex;
-  gap: 8px;
   align-items: center;
-  margin: 2px 0;
+  gap: 8px;
+  padding: 8px 9px;
+  border-radius: 6px;
   color: #737c78;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.sideItemActive {
-  padding: 8px;
-  border-radius: 6px;
+.convItemActive {
   display: flex;
-  gap: 8px;
   align-items: center;
-  margin: 2px 0;
+  gap: 8px;
+  padding: 8px 9px;
+  border-radius: 6px;
   background: #edf3ef;
   color: @preview-ink;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.folder {
-  padding: 7px 8px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-
-  i {
-    width: 7px;
-    height: 7px;
-    border-radius: 2px;
-  }
-}
-
-.folderBlue {
-  background: #78aee6;
-}
-
-.folderOrange {
-  background: #edb56f;
-}
-
-.folderGreen {
-  background: #72c6a1;
-}
-
-// 编辑器
-.editor {
-  padding: 34px 40px;
-  min-width: 0;
-
-  h2 {
-    font-size: 24px;
-    letter-spacing: -0.04em;
-    margin: 12px 0 7px;
-  }
-
-  h3 {
-    font-size: 12px;
-    margin: 0 0 8px;
-    font-weight: 700;
-  }
-}
-
-.crumb {
-  color: #a0a7a3;
-  font-size: 8px;
-}
-
-.meta {
-  display: flex;
-  gap: 12px;
-  color: #9ca39f;
-  font-size: 8px;
-
-  span:first-child {
-    background: #edf7f1;
-    color: #438368;
-    padding: 3px 6px;
-    border-radius: 4px;
-  }
-}
-
-.aiSummary {
-  display: flex;
-  gap: 10px;
-  padding: 14px;
-  background: #f0f8f3;
-  border: 1px solid #d8ecdf;
-  border-radius: 9px;
-  margin: 22px 0;
-  font-size: 9px;
-
-  p {
-    margin: 4px 0 0;
-    line-height: 1.5;
-    color: #69716e;
-  }
-}
-
-.spark,
-.sparkSmall,
-.sparkTiny {
-  display: grid;
-  place-items: center;
-  border-radius: 7px;
-  background: @preview-ink;
-  color: @lime;
-  font-size: 11px;
+.convMark {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d3d9d6;
   flex: 0 0 auto;
 }
 
-.spark {
-  width: 24px;
-  height: 24px;
+.convMarkActive {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: @accent;
+  box-shadow: 0 0 0 4px rgba(23, 160, 110, 0.14);
+  flex: 0 0 auto;
 }
 
-.sparkSmall {
-  width: 19px;
-  height: 19px;
-  font-size: 8px;
-}
-
-.sparkTiny {
-  width: 17px;
-  height: 17px;
-  font-size: 7px;
-}
-
-.noteText {
-  font-size: 9px;
-  line-height: 1.8;
-  color: #5e6763;
-}
-
-.highlight {
-  font-size: 9px;
-  line-height: 1.7;
-  border-left: 2px solid @lime;
-  padding: 7px 10px;
-  background: #fafbf9;
-  margin-top: 12px;
-  color: @preview-ink;
-}
-
-.noteLines {
-  display: grid;
-  gap: 8px;
-  margin-top: 18px;
-
-  span {
-    height: 5px;
-    border-radius: 9px;
-    background: #eef1ef;
-
-    &:nth-child(2) {
-      width: 82%;
-    }
-
-    &:nth-child(3) {
-      width: 55%;
-    }
-  }
-}
-
-// AI 面板
-.aiPanel {
-  border-left: 1px solid @preview-line;
-  padding: 17px;
-  background: #fbfcfa;
-  font-size: 9px;
+// 聊天主区
+.chatMain {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  background: transparent;
 }
 
-.aiHead {
+.chatHeader {
+  height: 46px;
+  border-bottom: 1px solid @preview-line;
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-weight: 700;
-
-  > span:last-child {
-    margin-left: auto;
-    color: #a4aaa7;
-  }
-}
-
-.userBubble {
-  background: #edf1ee;
-  border-radius: 9px 9px 2px 9px;
-  padding: 10px;
-  line-height: 1.5;
-  margin: 22px 0 18px 25px;
-  color: @preview-ink;
-}
-
-.aiAnswer {
-  display: flex;
   gap: 8px;
-  line-height: 1.5;
+  padding: 0 18px;
+  font-size: 11px;
+  font-weight: 700;
+  color: @preview-ink;
 
-  p {
-    margin: 1px 0 8px;
+  .onlineDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: @lime;
+    box-shadow: 0 0 0 4px rgba(121, 230, 178, 0.2);
   }
 
-  ol {
-    margin: 0;
-    padding-left: 15px;
-  }
-
-  li {
-    margin: 5px 0;
+  .chatHeaderMeta {
+    margin-left: auto;
+    font-size: 8px;
+    font-weight: 500;
+    color: #a0a7a3;
+    display: flex;
+    gap: 5px;
   }
 }
 
-.chips {
+.messageArea {
+  flex: 1;
+  padding: 16px 18px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin: 14px 0;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}
+
+// 用户气泡：右对齐 accent 软背景
+.msgUser {
+  align-self: flex-end;
+  max-width: 72%;
+  background: #e3f4ea;
+  color: #1c4433;
+  border: 1px solid #d0ebdd;
+  border-radius: 11px 11px 3px 11px;
+  padding: 9px 12px;
+  font-size: 9.5px;
+  line-height: 1.6;
+}
+
+// AI 消息：左对齐 + 头像
+.msgAi {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  max-width: 88%;
+}
+
+.aiAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: @preview-ink;
+  color: @lime;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.msgAiBody {
+  font-size: 9.5px;
+  line-height: 1.7;
+  color: #4e5853;
+  padding: 2px 0;
+}
+
+// AI 回复要点列表：step2 整段淡入（stagger），默认不可见由动画门控
+.aiAnswerItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 5px;
+  padding-left: 4px;
 
   span {
-    border: 1px solid @preview-line;
-    padding: 5px 7px;
-    border-radius: 5px;
-    color: #62706a;
-    background: #ffffff;
+    margin-top: 3px;
+    flex: 0 0 auto;
   }
+
+  // 循环边界缓冲：与既有 stagger 模式一致，避免 2→0 切换瞬间首帧跳回
+  &:nth-child(1) { animation-delay: 0.11s; }
+  &:nth-child(2) { animation-delay: 0.31s; }
+  &:nth-child(3) { animation-delay: 0.51s; }
+  &:nth-child(4) { animation-delay: 0.71s; }
 }
 
-.prompt {
-  margin-top: auto;
+.aiAnswerBullet {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: @accent;
+  box-shadow: 0 0 0 3px rgba(23, 160, 110, 0.14);
+}
+
+.twLine {
+  white-space: pre-line;
+}
+
+// 底部输入框
+.chatInput {
+  margin: 12px 18px 16px;
   border: 1px solid @preview-line;
   height: 36px;
-  border-radius: 8px;
-  padding: 0 9px;
+  border-radius: 10px;
+  padding: 0 12px;
   color: #a0a7a3;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: #ffffff;
   font-size: 9px;
+  box-shadow: 0 2px 8px rgba(30, 50, 41, 0.05);
 
   b {
-    background: @preview-ink;
+    background: @accent;
     color: #fff;
     width: 20px;
     height: 20px;
@@ -677,6 +617,7 @@
   }
 
   i {
+    position: relative;
     width: 7px;
     height: 7px;
     border-radius: 50%;
@@ -686,8 +627,9 @@
 }
 
 .tagLeft {
-  left: -46px;
-  bottom: 165px;
+  left: 0;
+  bottom: 0;
+  transform: translateX(-72%);
 }
 
 .tagRight {
@@ -759,7 +701,42 @@
     width: 35px;
     height: 1px;
     background: #b7bdb9;
+    animation: pulseLine 2.4s ease-in-out infinite;
   }
+
+  .wordChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 6px;
+    border-radius: 8px;
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+    cursor: default;
+
+    b {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 11px;
+      color: #fff;
+      background: @accent;
+      animation: wordGlow 3s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes pulseLine {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes wordGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(23, 160, 110, 0); }
+  50% { box-shadow: 0 0 0 6px rgba(23, 160, 110, 0.14); }
 }
 
 .sectionHead {
@@ -884,6 +861,54 @@
   }
 }
 
+// 支持格式行：彩色图标徽章
+.formatRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 30px;
+
+  .formatItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    color: @ink;
+    background: #ffffff;
+    border: 1px solid @line;
+    border-radius: 9px;
+    padding: 7px 12px 7px 8px;
+    box-shadow: 0 4px 14px rgba(31, 54, 43, 0.06);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+
+    i {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-style: normal;
+      font-size: 11px;
+      color: #fff;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      border-color: rgba(23, 160, 110, 0.4);
+      box-shadow: 0 8px 20px rgba(31, 54, 43, 0.12);
+    }
+
+    // 各格式专属配色
+    &[data-format='pdf'] i { background: #e5484d; }
+    &[data-format='word'] i { background: #2b7de9; }
+    &[data-format='ppt'] i { background: #f2703a; }
+    &[data-format='excel'] i { background: #22a06b; }
+    &[data-format='note'] i { background: #8a9390; }
+  }
+}
+
 .sectionNumber {
   display: flex;
   align-items: center;
@@ -919,97 +944,176 @@
   justify-content: center;
 }
 
-.promptCard,
-.generatedCard {
+// 特性 01 · AI 创作助手配置界面（AgentEditor 风格）
+.editorWindow {
+  width: 92%;
+  max-width: 640px;
   background: @surface;
-  color: @ink;
   border-radius: 16px;
-  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.25);
-}
+  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.18);
+  display: grid;
+  grid-template-columns: 168px 1fr;
+  overflow: hidden;
 
-.promptCard {
-  width: 73%;
-  padding: 20px;
-  transform: translate(-8%, -65%);
-
-  > p {
-    font-size: 14px;
-    line-height: 1.65;
-    margin: 22px 0 25px;
-    color: @ink;
+  &[data-fading='true'] {
+    opacity: 0;
+    transition: opacity 0.26s ease;
   }
 }
 
-.promptTop {
+.editorSidebar {
+  background: #fafbfa;
+  border-right: 1px solid @preview-line;
+  padding: 18px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.editorNav,
+.editorNavActive {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 11px;
-  font-weight: 600;
-
-  i {
-    margin-left: auto;
-    width: 6px;
-    height: 6px;
-    background: @lime;
-    border-radius: 50%;
-  }
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 10px;
+  color: #7a837e;
 }
 
-.promptActions {
+.editorNavActive {
+  background: #edf3ef;
+  color: @preview-ink;
+  font-weight: 700;
+}
+
+.navDot,
+.navDotActive {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d3d9d6;
+}
+
+.navDotActive {
+  background: @accent;
+  box-shadow: 0 0 0 4px rgba(23, 160, 110, 0.14);
+}
+
+.editorMain {
+  padding: 20px 24px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #829089;
-  font-size: 9px;
-
-  b {
-    background: @preview-ink;
-    color: #fff;
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
-    display: grid;
-    place-items: center;
-  }
+  flex-direction: column;
+  gap: 22px;
 }
 
-.generatedCard {
-  position: absolute;
-  width: 72%;
-  right: 0;
-  bottom: 20px;
-  padding: 24px;
-
-  h3 {
-    font-size: 18px;
-    line-height: 1.4;
-    margin: 12px 0 20px;
-    font-weight: 700;
-  }
+.editorSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.generationLabel {
+.editorLabel {
   font-size: 9px;
   font-weight: 700;
-  color: @accent;
+  color: @preview-muted;
+  letter-spacing: 0.02em;
 }
 
-.outlineItem {
-  display: grid;
-  grid-template-columns: 32px 1fr;
-  gap: 8px;
-  padding: 10px 0;
-  border-top: 1px solid @line;
+.editorInput {
+  height: 34px;
+  border: 1px solid @preview-line;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 11px;
+  color: @preview-ink;
+  background: #fff;
+}
+
+.editorHint {
+  font-size: 8.5px;
+  color: #9aa39f;
+}
+
+.editorPromptArea {
+  border: 1px solid @preview-line;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   font-size: 10px;
+  color: @preview-ink;
+  line-height: 1.7;
+}
+
+.editorPromptLine {
+  white-space: pre-line;
+}
+
+.editorModelCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid @preview-line;
+  border-radius: 9px;
+  padding: 12px 14px;
+  background: #fff;
 
   b {
-    font-family: @mono;
+    font-size: 11px;
+    display: block;
+    color: @preview-ink;
+  }
+
+  small {
+    font-size: 8px;
     color: #9aa39f;
   }
 }
 
-// 特性 02 · 个人知识库 demo
+.modelIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #1d4a3a, #2f7a5c);
+  color: @lime;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+}
+
+.editorTagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.editorTag {
+  font-size: 9px;
+  font-weight: 600;
+  color: #2f6b52;
+  background: #e7f4ec;
+  border: 1px solid #d3ecdd;
+  border-radius: 7px;
+  padding: 6px 10px;
+}
+
+.editorSave {
+  align-self: flex-start;
+  background: @preview-ink;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 9px 18px;
+}
+
+// 特性 02 · 知识库/收藏夹 demo（FavoritesTab 风格）
 .knowledgeDemo {
   position: relative;
   min-height: 600px;
@@ -1017,163 +1121,161 @@
   align-items: center;
 }
 
-.libraryWindow {
+.favoritesWindow {
   width: 90%;
+  max-width: 620px;
   background: #ffffff;
   border-radius: 16px;
-  padding: 24px;
   box-shadow: 0 30px 70px rgba(47, 68, 53, 0.13);
-}
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  overflow: hidden;
 
-.libraryTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  margin-bottom: 25px;
-  color: @ink;
-
-  span {
-    background: @preview-ink;
-    color: #fff;
-    border-radius: 7px;
-    padding: 8px 11px;
-    font-size: 9px;
+  &[data-fading='true'] {
+    opacity: 0;
+    transition: opacity 0.26s ease;
   }
 }
 
-.fileGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+.collectionPanel {
+  background: #f6faf8;
+  border-right: 1px solid rgba(20, 33, 28, 0.1);
+  padding: 16px 12px;
 }
 
-.fileCard,
-.fileCardSelected {
-  height: 130px;
-  border: 1px solid @line;
-  border-radius: 10px;
-  padding: 13px;
+.collectionHeader {
   display: flex;
-  flex-direction: column;
-  font-size: 9px;
-  color: @ink;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
 
   b {
-    font-size: 10px;
-    font-weight: 700;
-  }
-
-  small {
-    color: #9da4a0;
-    margin-top: 5px;
+    font-size: 11px;
+    color: @preview-ink;
   }
 }
 
-.fileCardSelected {
-  border-color: #77cda5;
-  background: #f3fbf7;
+.collectionNew {
+  font-size: 8px;
+  color: @accent;
+  font-weight: 600;
+  cursor: default;
 }
 
-.fileIcon {
-  width: 33px;
-  height: 36px;
-  border-radius: 5px;
-  display: grid;
-  place-items: center;
-  background: #f2ebe8;
-  color: #a35f4e;
-  font-size: 7px;
-  font-weight: 700;
-  margin-bottom: auto;
-}
-
-.fileGrid {
-  .fileCard:nth-child(2) .fileIcon {
-    background: #e9f2f6;
-    color: #4d809a;
-  }
-
-  .fileCard:nth-child(3) .fileIcon {
-    background: #edf2e9;
-    color: #56815d;
-  }
-}
-
-.askBar {
-  margin-top: 25px;
-  height: 42px;
-  border: 1px solid @line;
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 0 12px;
-  color: #9aa19e;
-  font-size: 10px;
-  background: @surface;
-
-  span {
-    color: @accent;
-  }
-}
-
-.answerCard {
-  position: absolute;
-  right: -10px;
-  bottom: 28px;
-  width: 54%;
-  background: @deep;
-  color: @on-deep;
-  padding: 20px;
-  border-radius: 13px;
-  box-shadow: 0 20px 55px rgba(28, 46, 36, 0.25);
-
-  > p {
-    font-size: 10px;
-    line-height: 1.75;
-    color: #c7d0cb;
-    margin: 17px 0;
-  }
-}
-
-.answerHead {
+.collectionItem,
+.collectionItemActive {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 6px;
   font-size: 10px;
+  color: #73807a;
+  cursor: default;
+}
+
+.collectionItemActive {
+  background: #e3f1ea;
+  color: @preview-ink;
   font-weight: 700;
 }
 
-.sources {
+.collectionMark,
+.collectionMarkActive {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #d3d9d6;
+}
+
+.collectionMarkActive {
+  background: @accent;
+  box-shadow: 0 0 0 4px rgba(23, 160, 110, 0.14);
+}
+
+.collectionName {
+  flex: 1;
+}
+
+.collectionCount {
+  font-size: 8px;
+  color: #9aa39f;
+}
+
+.resourcePanel {
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+}
 
-  span {
-    background: @deep-soft;
-    border-radius: 5px;
-    padding: 6px 8px;
-    color: #9faaa5;
-    font-size: 7px;
+.resourceHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+
+  b {
+    font-size: 12px;
+    color: @preview-ink;
   }
 }
 
-.formatRow {
-  display: flex;
-  gap: 7px;
-  margin-top: 35px;
+.resourceCount {
+  font-size: 9px;
+  color: #9aa39f;
+  background: #f0f3f1;
+  border-radius: 10px;
+  padding: 1px 8px;
+}
 
-  span {
-    font-family: @mono;
-    font-size: 8px;
-    border: 1px solid rgba(23, 32, 29, 0.13);
-    border-radius: 5px;
-    padding: 7px 9px;
-    background: rgba(255, 255, 255, 0.35);
-    color: @muted;
-    font-weight: 600;
-  }
+.resourceList {
+  display: flex;
+  flex-direction: column;
+}
+
+.resourceRowHeader {
+  display: grid;
+  grid-template-columns: 1fr 100px 70px;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(20, 33, 28, 0.08);
+  font-size: 8px;
+  color: #9aa39f;
+  font-weight: 600;
+}
+
+.resourceRow {
+  display: grid;
+  grid-template-columns: 1fr 100px 70px;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(20, 33, 28, 0.06);
+  font-size: 10px;
+  color: @preview-ink;
+  align-items: center;
+}
+
+.resourceName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resourceIconFolder,
+.resourceIconFile {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.resourceDate,
+.resourceSize {
+  font-size: 9px;
+  color: #9aa39f;
 }
 
 // 特性 03 · 团队空间
@@ -1201,224 +1303,222 @@
   justify-content: flex-end;
 }
 
-.teamWindow {
+// ═══ 课题组详情 mockup（GroupDetail 风格）═══
+.groupWindow {
   width: 90%;
+  max-width: 560px;
   background: @surface;
   border: 1px solid @line;
   border-radius: 16px;
-  padding: 25px;
+  padding: 20px;
   box-shadow: 0 25px 60px rgba(35, 55, 46, 0.1);
   color: @ink;
-}
 
-.teamTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 22px;
-  border-bottom: 1px solid @line;
-  font-size: 11px;
-  font-weight: 700;
-
-  > div {
-    display: flex;
-    align-items: center;
-    gap: 9px;
+  &[data-fading='true'] {
+    opacity: 0;
+    transition: opacity 0.26s ease;
   }
 }
 
-.teamIcon {
-  width: 29px;
-  height: 29px;
-  border-radius: 8px;
-  background: #dff4e8;
-  color: #2e7859;
-  display: grid;
-  place-items: center;
-  font-size: 11px;
-}
+.groupCover {
+  aspect-ratio: 16 / 7;
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 18% 30%, rgba(111, 227, 171, 0.55), transparent 42%),
+    radial-gradient(circle at 82% 75%, rgba(45, 169, 174, 0.4), transparent 46%),
+    linear-gradient(135deg, #12352a, #1e5340);
+  position: relative;
+  overflow: hidden;
 
-.memberStack {
-  display: flex;
-  align-items: center;
-
-  i {
-    font-style: normal;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: #e7ece9;
-    border: 2px solid #ffffff;
-    margin-left: -6px;
-    font-size: 7px;
-    color: @ink;
-
-    &:nth-child(2) {
-      background: #e7e8f4;
-    }
-
-    &:nth-child(3) {
-      background: #f2e9df;
-    }
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+    background-size: 26px 26px;
+    mask-image: radial-gradient(circle at 40% 40%, #000, transparent 78%);
   }
 }
 
-.projectStatus {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin: 28px 0 16px;
-
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-  }
-
-  small {
-    color: #9aa29e;
-    font-size: 8px;
-  }
-
-  b {
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  > span {
-    font-size: 8px;
-    background: #e8f6ee;
-    color: #3e8666;
-    padding: 6px 8px;
-    border-radius: 5px;
-    font-weight: 700;
-  }
-}
-
-.progress {
-  height: 5px;
-  background: #eef1ef;
-  border-radius: 9px;
-
-  i {
-    display: block;
-    width: 64%;
-    height: 100%;
-    background: @accent;
-    border-radius: 9px;
-  }
-}
-
-.taskGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 9px;
-  margin-top: 25px;
-
-  > div {
-    border: 1px solid @line;
-    border-radius: 9px;
-    padding: 13px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  span {
-    font-size: 8px;
-    color: #88918d;
-  }
-
-  b {
-    font-size: 14px;
-    font-weight: 700;
-  }
-
-  em {
-    font-style: normal;
-    font-size: 7px;
-    color: #987f56;
-  }
-}
-
-.taskDone {
-  color: @accent !important;
-}
-
-.activityCard {
+.waveLine {
   position: absolute;
-  left: -15px;
-  bottom: 32px;
-  background: #ffffff;
-  border: 1px solid @line;
-  box-shadow: 0 17px 45px rgba(35, 55, 46, 0.12);
-  border-radius: 11px;
-  padding: 13px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  width: 65%;
-  font-size: 8px;
-  color: @ink;
+  left: 0;
+  right: 0;
+  bottom: 38%;
+  height: 20px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.45;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 24'%3E%3Cpath d='M0 12 C10 1, 20 1, 30 12 C40 23, 50 23, 60 12' fill='none' stroke='rgba(255,255,255,0.55)' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 60px 100%;
+  background-repeat: repeat-x;
+  animation: waveSlide 3s linear infinite;
+}
+
+@keyframes waveSlide {
+  0% { background-position-x: 0; }
+  100% { background-position-x: -60px; }
+}
+
+.groupBadge {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  font-size: 9px;
+  font-weight: 700;
+  color: @on-deep;
+  background: rgba(20, 48, 39, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(6px);
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+
+.groupInfo {
+  padding: 15px 2px 13px;
+
+  b {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+  }
 
   p {
-    margin: 5px 0 0;
-    color: #8b938f;
-  }
-
-  small {
-    margin-left: auto;
-    color: #a2a9a5;
-    white-space: nowrap;
+    margin: 6px 0 0;
+    font-size: 9px;
+    line-height: 1.6;
+    color: #7d8782;
   }
 }
 
-.userDot {
-  width: 28px;
-  height: 28px;
+.groupTabBar {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid @line;
+  padding: 0 2px;
+}
+
+.groupTab,
+.groupTabActive {
+  position: relative;
+  font-size: 10px;
+  padding: 0 2px 10px;
+  color: #8b938f;
+  cursor: default;
+}
+
+.groupTabActive {
+  color: @preview-ink;
+  font-weight: 700;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    border-radius: 2px;
+    background: @accent;
+  }
+}
+
+.groupMemberList {
+  padding-top: 6px;
+  position: relative;
+}
+
+// 翻页容器：两页同时存在，通过 pageVisible/pageHidden 控制显示，
+// 配合 pageSlideIn 产生从右滑入的翻页效果，避免 key 重挂载导致的闪现
+// （锚定于最近定位祖先 .groupMemberList，绝对定位不会缩回左上角）
+.groupMemberPage {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.pageVisible {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.pageHidden {
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.pageSlideIn {
+  transform: translateX(16px);
+}
+
+.pageSlideIn.pageVisible {
+  transform: translateX(0);
+}
+
+.groupMemberRow {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 4px;
+  border-bottom: 1px solid @line;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.groupMemberAvatar {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: #e8e7f1;
   display: grid;
   place-items: center;
-  flex-shrink: 0;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: @preview-ink;
+  background: #e7ece9;
 }
 
-.classCard {
-  position: absolute;
-  right: -10px;
-  top: 38px;
-  background: @deep;
-  color: @on-deep;
-  border-radius: 11px;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 17px 45px rgba(35, 55, 46, 0.16);
+.groupMemberName {
+  font-size: 11px;
+  font-weight: 600;
+}
 
-  > span {
-    color: @lime;
-  }
+.roleOwner,
+.roleAdmin,
+.roleMember {
+  font-size: 8px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
 
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
+.roleOwner {
+  background: #fbe9e7;
+  color: #c2533f;
+}
 
-  small {
-    font-size: 7px;
-    color: #9fa9a4;
-  }
+.roleAdmin {
+  background: #e4f1fb;
+  color: #2f7bb0;
+}
 
-  b {
-    font-size: 9px;
-  }
+.roleMember {
+  background: #eef1ef;
+  color: #6b746f;
+}
+
+.groupPagination {
+  padding: 12px 4px 2px;
+  font-size: 8px;
+  color: #9aa29e;
+  text-align: center;
 }
 
 // ═══ 师生使用场景 ═══
@@ -1687,16 +1787,18 @@
     }
   }
 
-  .appBody {
+  .chatLayout {
     grid-template-columns: 130px 1fr;
   }
 
-  .aiPanel {
+  .chatHeaderMeta {
     display: none;
   }
 
   .tagLeft {
     left: -10px;
+    bottom: -10px;
+    top: auto;
   }
 
   .tagRight {
@@ -1785,17 +1887,21 @@
     display: none;
   }
 
-  .appBody {
+  .chatLayout {
     height: 380px;
     grid-template-columns: 1fr;
   }
 
-  .sidebar {
+  .conversationList {
     display: none;
   }
 
-  .editor {
-    padding: 28px 23px;
+  .chatHeader {
+    height: 40px;
+  }
+
+  .messageArea {
+    padding: 12px 14px;
   }
 
   .tagLeft,
@@ -1849,55 +1955,50 @@
     min-height: 430px;
   }
 
-  .promptCard {
-    width: 88%;
-    transform: translate(-4%, -55%);
+  .favoritesWindow {
+    width: 100%;
+    grid-template-columns: 1fr;
   }
 
-  .generatedCard {
-    width: 87%;
+  .collectionPanel {
+    display: none;
   }
 
-  .libraryWindow {
+  .resourcePanel {
+    padding: 14px;
+  }
+
+  .resourceRowHeader {
+    display: none;
+  }
+
+  .resourceRow {
+    grid-template-columns: 1fr 70px;
+  }
+
+  .groupWindow {
     width: 100%;
     padding: 16px;
   }
 
-  .fileGrid {
-    grid-template-columns: repeat(2, 1fr);
-
-    .fileCard:last-child,
-    .fileCardSelected:last-child {
-      display: none;
-    }
+  .groupCover {
+    aspect-ratio: 16 / 8;
   }
 
-  .answerCard {
-    width: 82%;
-    right: -5px;
+  .groupInfo b {
+    font-size: 14px;
   }
 
-  .teamWindow {
-    width: 100%;
-    padding: 17px;
+  .groupMemberRow {
+    grid-template-columns: 30px 1fr auto;
+    gap: 8px;
+    padding: 8px 4px;
   }
 
-  .taskGrid {
-    gap: 5px;
-
-    > div {
-      padding: 9px;
-    }
-  }
-
-  .activityCard {
-    width: 83%;
-    left: -5px;
-  }
-
-  .classCard {
-    right: -5px;
-    top: 8px;
+  .groupMemberAvatar {
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
   }
 
   .scenes {
@@ -1964,21 +2065,6 @@
 
 // ═══ 门户页叙事循环动效（data-step 阶段标记驱动，尊重减弱动效偏好）═══
 
-// 生成标签翻转（全局，非动画：无 JS 时显示「正在生成」）
-.genDone {
-  display: none;
-}
-
-.aiDemo[data-step='1'] .genWriting,
-.aiDemo[data-step='2'] .genWriting {
-  display: none;
-}
-
-.aiDemo[data-step='1'] .genDone,
-.aiDemo[data-step='2'] .genDone {
-  display: inline;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   @keyframes stepIn {
     from {
@@ -1991,13 +2077,48 @@
     }
   }
 
-  .aiDemo[data-step='1'] .genDone,
-  .aiDemo[data-step='2'] .genDone {
+  @keyframes stepInLeft {
+    from { opacity: 0; transform: translateX(-14px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes stepInRight {
+    from { opacity: 0; transform: translateX(14px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateX(12px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes stepInDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .aiDemo[data-step='1'] .genDone {
     animation: stepIn 0.3s ease-out both;
+  }
+
+  .aiDemo[data-step='2'] .genDone {
+    opacity: 1;
+    transform: none;
+
+    &:nth-child(1) { animation-delay: 0.1s; }
+    &:nth-child(2) { animation-delay: 0.3s; }
+    &:nth-child(3) { animation-delay: 0.5s; }
+    &:nth-child(4) { animation-delay: 0.7s; }
   }
 
   .aiDemo[data-step='0'] .genWriting {
     animation: stepIn 0.3s ease-out both;
+  }
+
+  .aiDemo[data-step='1'] .genWriting,
+  .aiDemo[data-step='2'] .genWriting {
+    opacity: 1;
+    transform: none;
   }
 
   @keyframes blink {
@@ -2025,10 +2146,12 @@
   @keyframes pulseSoft {
     0%,
     100% {
-      box-shadow: 0 0 0 0 rgba(121, 230, 178, 0.35);
+      transform: scale(1);
+      opacity: 0.35;
     }
     50% {
-      box-shadow: 0 0 0 7px rgba(121, 230, 178, 0);
+      transform: scale(3);
+      opacity: 0;
     }
   }
 
@@ -2043,41 +2166,53 @@
     }
   }
 
+  // 演出元素进入动画全部升到合成层，避免首帧布局抖动
+  [data-step] {
+    will-change: transform, opacity;
+  }
+
   // manifesto 三词依次点亮（挂 revealVisible）
-  .threeWords span,
+  .threeWords .wordChip,
   .threeWords i {
     opacity: 0;
     transform: translateY(8px);
   }
 
-  .revealVisible .threeWords span,
+  .revealVisible .threeWords .wordChip,
   .revealVisible .threeWords i {
-    animation: stepIn 0.5s ease-out both;
+    animation: stepIn 0.4s ease-out both;
   }
 
-  .revealVisible .threeWords span:nth-child(1) {
-    animation-delay: 0.15s;
+  .revealVisible .threeWords .wordChip:nth-child(1) {
+    animation-delay: 0.1s;
   }
 
   .revealVisible .threeWords i:nth-child(2) {
-    animation-delay: 0.4s;
+    animation-delay: 0.3s;
   }
 
-  .revealVisible .threeWords span:nth-child(3) {
-    animation-delay: 0.65s;
+  .revealVisible .threeWords .wordChip:nth-child(3) {
+    animation-delay: 0.5s;
   }
 
   .revealVisible .threeWords i:nth-child(4) {
+    animation-delay: 0.7s;
+  }
+
+  .revealVisible .threeWords .wordChip:nth-child(5) {
     animation-delay: 0.9s;
   }
 
-  .revealVisible .threeWords span:nth-child(5) {
-    animation-delay: 1.15s;
-  }
-
-  // 连接圆点脉冲 + 窗口扫描线
+  // 连接圆点脉冲（::before 径向扩散，仅合成属性）+ 窗口扫描线
   .tagRight i {
-    animation: pulseSoft 2.6s ease-in-out infinite;
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: @lime;
+      animation: pulseSoft 2.6s ease-in-out infinite;
+    }
   }
 
   .appWindow::after {
@@ -2091,10 +2226,17 @@
     z-index: 4;
     background: linear-gradient(180deg, rgba(121, 230, 178, 0.16), transparent);
     opacity: 0;
+    will-change: opacity;
   }
 
   .appWindow[data-step='0']::after {
     animation: scan 1.5s ease-in-out infinite;
+  }
+
+  .appWindow[data-step='1']::after,
+  .appWindow[data-step='2']::after {
+    animation: scan 3s ease-in-out infinite;
+    opacity: 0.3;
   }
 
   // hero：思考圆点
@@ -2120,9 +2262,17 @@
     }
   }
 
-  .appWindow[data-step='1'] .dots,
+  // hero：用户消息之后，AI 加载思考圆点出现；step1 打字期间常驻，
+  // step1 打字结束后（1.4s+）圆点淡出，为 step2 答案整段淡入留白
+  .appWindow[data-step='1'] .dots {
+    opacity: 1;
+    transition: opacity 0.4s ease;
+    animation-delay: 1.4s;
+  }
+
   .appWindow[data-step='2'] .dots {
     opacity: 0;
+    transition: opacity 0.4s ease;
   }
 
   // 光标
@@ -2135,152 +2285,355 @@
     background: currentColor;
   }
 
-  .appWindow[data-step='0'] .caret,
-  .appWindow[data-step='2'] .caret,
   .aiDemo[data-step='0'] .caret,
   .aiDemo[data-step='2'] .caret {
     opacity: 0;
   }
 
-  .appWindow[data-step='1'] .caret,
   .aiDemo[data-step='1'] .caret {
     opacity: 1;
     animation: blinkStep 1s linear infinite;
   }
-
-  // hero：AI 回答逐条流入
-  .appWindow[data-step='0'] .aiAnswer {
+  .appWindow[data-step='0'] .caret {
     opacity: 0;
   }
 
-  .appWindow[data-step='1'] .aiAnswer li {
-    opacity: 0;
-    animation: stepIn 0.45s ease-out both;
-
-    &:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    &:nth-child(2) {
-      animation-delay: 0.7s;
-    }
-
-    &:nth-child(3) {
-      animation-delay: 1.3s;
-    }
+  .appWindow[data-step='1'] .caret {
+    opacity: 1;
+    animation: blinkStep 1s linear infinite;
   }
 
-  // AI demo：大纲逐条浮现（nth-of-type 按 div 计数，不受 gen 标签/h3 干扰）
-  .aiDemo[data-step='0'] .outlineItem {
-    opacity: 0;
-    animation: stepIn 0.45s ease-out both;
-
-    &:nth-of-type(1) {
-      animation-delay: 0.15s;
-    }
-
-    &:nth-of-type(2) {
-      animation-delay: 0.55s;
-    }
-
-    &:nth-of-type(3) {
-      animation-delay: 0.95s;
-    }
-
-    &:nth-of-type(4) {
-      animation-delay: 1.35s;
-    }
+  // 打字完成后光标回到常亮，直到答案淡入
+  .appWindow[data-step='1'] .caret {
+    opacity: 1;
+    animation: none;
   }
 
-  // 知识库 demo：文件卡交错 + 检索停顿 + 答案弹出
-  .knowledgeDemo[data-step='0'] .fileCard,
-  .knowledgeDemo[data-step='0'] .fileCardSelected {
-    opacity: 0;
-    animation: stepIn 0.45s ease-out both;
-
-    &:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    &:nth-child(2) {
-      animation-delay: 0.5s;
-    }
-
-    &:nth-child(3) {
-      animation-delay: 0.9s;
-    }
+  .appWindow[data-step='2'] .caret {
+    opacity: 1;
   }
 
-  .knowledgeDemo[data-step='0'] .answerCard {
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  .appWindow[data-step='2'] .chatInput {
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
   }
 
-  .knowledgeDemo[data-step='1'] .answerCard {
+  // Hero 聊天：左侧会话列表从左侧滑入，右上消息区向上，逻辑从左到右、逐层涌现
+  // （step 0 入场动画；step 1/2 由下方兜底规则保持终态可见）
+  // 循环边界缓冲：所有入场 delay 在既有值上叠加 0.01s，
+  // 避免 step2→0 属性切换瞬间动画首帧未就绪导致的整块闪现
+  .appWindow[data-step='0'] .convNew,
+  .appWindow[data-step='0'] .convItem,
+  .appWindow[data-step='0'] .convItemActive {
+    opacity: 0;
+    animation: stepInLeft 0.4s ease-out both;
+
+    &:nth-child(1) { animation-delay: 0.21s; }
+    &:nth-child(2) { animation-delay: 0.41s; }
+    &:nth-child(3) { animation-delay: 0.61s; }
+    &:nth-child(4) { animation-delay: 0.81s; }
+    &:nth-child(5) { animation-delay: 1.01s; }
+  }
+
+  .appWindow[data-step='0'] .chatHeader {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 0.06s;
+  }
+
+  .appWindow[data-step='0'] .msgUser {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 0.56s;
+  }
+
+  .appWindow[data-step='0'] .msgAi {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 0.81s;
+  }
+
+  // Hero 要点列表：step1 阶段保持隐藏（打字机在打引导句），
+  // step2 起整段淡入 stagger 展示
+  .appWindow[data-step='0'] .aiAnswerItem,
+  .appWindow[data-step='1'] .aiAnswerItem {
+    opacity: 0;
+  }
+
+  .appWindow[data-step='2'] .aiAnswerItem {
+    opacity: 0;
+    animation: stepIn 0.3s ease-out both;
+  }
+
+  // AI demo：左侧导航从左侧滑入，右侧各 section 依次向上，模型卡片/标签/保存按钮渐入
+  // step0 就展示全部表单元素（助手名称→提示词→模型→能力→保存），让整个编辑器在打字前完整可见
+  .aiDemo[data-step='0'] .editorNav,
+  .aiDemo[data-step='0'] .editorNavActive {
+    opacity: 0;
+    animation: stepInLeft 0.4s ease-out both;
+
+    &:nth-child(1) { animation-delay: 0.06s; }
+    &:nth-child(2) { animation-delay: 0.26s; }
+    &:nth-child(3) { animation-delay: 0.46s; }
+    &:nth-child(4) { animation-delay: 0.66s; }
+    &:nth-child(5) { animation-delay: 0.86s; }
+  }
+
+  .aiDemo[data-step='0'] .editorSection:first-child {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 0.31s;
+  }
+
+  .aiDemo[data-step='0'] .editorSection:nth-child(2) {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 0.61s;
+  }
+
+  // step0 就展示模型卡片、能力标签、保存按钮（不再隐藏）
+  .aiDemo[data-step='0'] .editorModelCard {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 0.81s;
+  }
+
+  .aiDemo[data-step='0'] .editorTag {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+
+    &:nth-child(1) { animation-delay: 1.01s; }
+    &:nth-child(2) { animation-delay: 1.16s; }
+    &:nth-child(3) { animation-delay: 1.31s; }
+    &:nth-child(4) { animation-delay: 1.46s; }
+  }
+
+  .aiDemo[data-step='0'] .editorSave {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 1.41s;
+  }
+
+  .aiDemo[data-step='0'] .editorSection:nth-child(3) {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 0.91s;
+  }
+
+  .aiDemo[data-step='0'] .editorSection:nth-child(4) {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 1.11s;
+  }
+
+  // step1 打字机打字时，打字行内容闪烁光标；模型/能力/保存保持可见（由 keep-visible 兜底）
+  .aiDemo[data-step='1'] .editorModelCard,
+  .aiDemo[data-step='2'] .editorModelCard,
+  .aiDemo[data-step='1'] .editorTag,
+  .aiDemo[data-step='2'] .editorTag,
+  .aiDemo[data-step='1'] .editorSave,
+  .aiDemo[data-step='2'] .editorSave,
+  .aiDemo[data-step='1'] .editorSection:nth-child(3),
+  .aiDemo[data-step='2'] .editorSection:nth-child(3),
+  .aiDemo[data-step='1'] .editorSection:nth-child(4),
+  .aiDemo[data-step='2'] .editorSection:nth-child(4) {
+    opacity: 1;
+  }
+
+  // 兜底：step 0 入场元素在 step 1/2 保持终态可见，避免循环切换时消失/闪现
+  .appWindow[data-step='1'] .convNew,
+  .appWindow[data-step='2'] .convNew,
+  .appWindow[data-step='1'] .convItem,
+  .appWindow[data-step='2'] .convItem,
+  .appWindow[data-step='1'] .convItemActive,
+  .appWindow[data-step='2'] .convItemActive,
+  .appWindow[data-step='1'] .chatHeader,
+  .appWindow[data-step='2'] .chatHeader,
+  .appWindow[data-step='1'] .msgUser,
+  .appWindow[data-step='2'] .msgUser,
+  .appWindow[data-step='1'] .msgAi,
+  .appWindow[data-step='2'] .msgAi,
+  .appWindow[data-step='2'] .aiAnswerItem {
     opacity: 1;
     transform: none;
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
   }
 
-  .knowledgeDemo[data-step='2'] .answerCard {
+  .aiDemo[data-step='1'] .editorNav,
+  .aiDemo[data-step='2'] .editorNav,
+  .aiDemo[data-step='1'] .editorNavActive,
+  .aiDemo[data-step='2'] .editorNavActive,
+  .aiDemo[data-step='1'] .editorSection:first-child,
+  .aiDemo[data-step='2'] .editorSection:first-child,
+  .aiDemo[data-step='1'] .editorSection:nth-child(2),
+  .aiDemo[data-step='2'] .editorSection:nth-child(2),
+  .aiDemo[data-step='1'] .editorSection:nth-child(3),
+  .aiDemo[data-step='2'] .editorSection:nth-child(3),
+  .aiDemo[data-step='1'] .editorSection:nth-child(4),
+  .aiDemo[data-step='2'] .editorSection:nth-child(4) {
     opacity: 1;
     transform: none;
   }
 
-  .knowledgeDemo[data-step='0'] .sources span,
-  .knowledgeDemo[data-step='1'] .sources span {
+  // 知识库 demo：左侧收藏集从左侧滑入，右侧资源从右侧滑入，左右并行涌现
+  // 循环边界缓冲：所有 delay 加 0.01s，避免 2→0 切换瞬间跳回 from 关键帧
+  .knowledgeDemo[data-step='0'] .collectionItem,
+  .knowledgeDemo[data-step='0'] .collectionItemActive {
     opacity: 0;
+    animation: stepInLeft 0.4s ease-out both;
+
+    &:nth-child(1) { animation-delay: 0.06s; }
+    &:nth-child(2) { animation-delay: 0.26s; }
+    &:nth-child(3) { animation-delay: 0.46s; }
+    &:nth-child(4) { animation-delay: 0.66s; }
+    &:nth-child(5) { animation-delay: 0.86s; }
   }
 
-  .knowledgeDemo[data-step='2'] .sources span {
+  .knowledgeDemo[data-step='0'] .collectionHeader {
+    opacity: 0;
+    animation: stepInLeft 0.4s ease-out both;
+    animation-delay: 0.06s;
+  }
+
+  // 右侧资源面板：从右侧滑入，整体晚于左侧；4 行从上到下一次出现，
+  // 第 1 行（文件夹）早，注意力机制综述（链接）最后出现：1.81s+0.4s=2.21s
+  // 在 step0（2500ms）内完整入场，避免越界卡半路
+  .knowledgeDemo[data-step='0'] .resourceHeader {
+    opacity: 0;
+    animation: stepInRight 0.4s ease-out both;
+    animation-delay: 0.51s;
+  }
+
+  .knowledgeDemo[data-step='0'] .resourceRowHeader {
+    opacity: 0;
+    animation: stepInRight 0.4s ease-out both;
+    animation-delay: 0.71s;
+  }
+
+  .knowledgeDemo[data-step='0'] .resourceRow {
+    opacity: 0;
+    animation: stepInRight 0.4s ease-out both;
+
+    // resourceList 首个子元素是 .resourceRowHeader，因此文件行对应 nth-child(2)~(5)
+    &:nth-child(2) { animation-delay: 0.86s; }
+    &:nth-child(3) { animation-delay: 1.11s; }
+    &:nth-child(4) { animation-delay: 1.36s; }
+    &:nth-child(5) { animation-delay: 1.81s; }
+  }
+
+  .knowledgeDemo[data-step='1'] .collectionItem:nth-child(2) {
+    background: #e3f1ea;
+    color: @preview-ink;
+    font-weight: 700;
+    transform: scale(1.02);
+    transition: background 0.3s, color 0.3s, transform 0.5s ease;
+  }
+
+  .knowledgeDemo[data-step='1'] .collectionItem:nth-child(2) .collectionMark {
+    background: @accent;
+    box-shadow: 0 0 0 4px rgba(23, 160, 110, 0.14);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+
+  .knowledgeDemo[data-step='2'] .collectionItem:nth-child(1),
+  .knowledgeDemo[data-step='2'] .collectionItemActive:nth-child(1) {
+    opacity: 0.5;
+    transition: opacity 0.5s ease;
+  }
+
+  // step2 中 item(2) 保持高亮（选中态），加过渡避免突变
+  .knowledgeDemo[data-step='2'] .collectionItem:nth-child(2) {
+    background: #e3f1ea;
+    color: @preview-ink;
+    font-weight: 700;
+    transform: scale(1.02);
+    transition: background 0.3s, color 0.3s, transform 0.5s ease;
+  }
+
+  .knowledgeDemo[data-step='2'] .collectionItem:nth-child(2) .collectionMark {
+    background: @accent;
+    box-shadow: 0 0 0 4px rgba(23, 160, 110, 0.14);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+
+  // 兜底：step 0 入场元素在 step 1/2 保持终态可见
+  .knowledgeDemo[data-step='1'] .collectionItem,
+  .knowledgeDemo[data-step='2'] .collectionItem,
+  .knowledgeDemo[data-step='1'] .collectionItemActive,
+  .knowledgeDemo[data-step='2'] .collectionItemActive,
+  .knowledgeDemo[data-step='1'] .collectionHeader,
+  .knowledgeDemo[data-step='2'] .collectionHeader,
+  .knowledgeDemo[data-step='1'] .resourceHeader,
+  .knowledgeDemo[data-step='2'] .resourceHeader,
+  .knowledgeDemo[data-step='1'] .resourceRowHeader,
+  .knowledgeDemo[data-step='2'] .resourceRowHeader,
+  .knowledgeDemo[data-step='1'] .resourceRow,
+  .knowledgeDemo[data-step='2'] .resourceRow {
     opacity: 1;
-    transition: opacity 0.4s ease-out;
-
-    &:nth-child(1) {
-      transition-delay: 0.3s;
-    }
-
-    &:nth-child(2) {
-      transition-delay: 0.9s;
-    }
+    transform: none;
   }
 
-  // 团队 demo：进度条 + 任务卡 + 活动卡
-  .teamDemo[data-step] .progress i {
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 1.2s ease-out;
-  }
-
-  .teamDemo[data-step='1'] .progress i,
-  .teamDemo[data-step='2'] .progress i {
-    transform: scaleX(1);
-  }
-
-  .teamDemo[data-step='0'] .taskGrid > div {
+  // 课题组 demo：封面从上滑入，信息/标签栏/成员依次向上，逐层展开
+  // 循环边界缓冲：所有 delay 加 0.01s，避免 2→0 切换瞬间跳回 from 关键帧
+  .teamDemo[data-step='0'] .groupCover {
     opacity: 0;
-    animation: stepIn 0.45s ease-out both;
-
-    &:nth-child(1) {
-      animation-delay: 0.2s;
-    }
-
-    &:nth-child(2) {
-      animation-delay: 0.6s;
-    }
-
-    &:nth-child(3) {
-      animation-delay: 1s;
-    }
+    animation: stepInLeft 0.4s ease-out both;
+    animation-delay: 0.01s;
   }
 
-  .teamDemo[data-step='0'] .activityCard {
+  .teamDemo[data-step='0'] .groupInfo {
     opacity: 0;
-    animation: stepIn 0.5s ease-out both;
-    animation-delay: 1.4s;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 0.61s;
   }
-}
+
+  .teamDemo[data-step='0'] .groupTabBar {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 0.91s;
+  }
+
+  .teamDemo[data-step='0'] .groupMemberRow {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+
+    &:nth-child(1) { animation-delay: 1.16s; }
+    &:nth-child(2) { animation-delay: 1.41s; }
+    &:nth-child(3) { animation-delay: 1.66s; }
+    &:nth-child(4) { animation-delay: 1.91s; }
+  }
+
+  // 翻页成员列表：取消 step1/2 的 animation 规则，仅靠 keep-visible 保持可见，
+  // 避免 step0→step1 切换时动画未完成导致的重新淡入闪现
+  .teamDemo[data-step='0'] .groupPagination {
+    opacity: 0;
+    animation: stepIn 0.4s ease-out both;
+    animation-delay: 1.96s;
+  }
+
+  // 兜底：step 1/2 保持终态可见，避免 [data-step] 切换时重新触发动画
+  // （groupMemberPage 不在此列：其可见性由 pageVisible/pageHidden 类控制，
+  //   若强制 opacity:1 会让两页同时显示造成重叠）
+  .teamDemo[data-step='1'] .groupCover,
+  .teamDemo[data-step='2'] .groupCover,
+  .teamDemo[data-step='1'] .groupInfo,
+  .teamDemo[data-step='2'] .groupInfo,
+  .teamDemo[data-step='1'] .groupTabBar,
+  .teamDemo[data-step='2'] .groupTabBar,
+  .teamDemo[data-step='1'] .groupMemberRow,
+  .teamDemo[data-step='2'] .groupMemberRow,
+  .teamDemo[data-step='1'] .groupPagination,
+  .teamDemo[data-step='2'] .groupPagination {
+    opacity: 1;
+    transform: none;
+  }
+
+  // 阶段 1 → 阶段 2 标签切换（::after 使用 left/right 定位不参与动画，无 reflow 风险）
+  .teamDemo[data-step='1'] .groupTabActive:nth-child(1)::after,
+  .teamDemo[data-step='2'] .groupTabActive:nth-child(1)::after {
+    transition: none;
+  }
+
+  }
 
 // 背景光斑呼吸 + 光带扫动（错峰；只动 transform/opacity，GPU 合成）
 @media (prefers-reduced-motion: no-preference) {
@@ -2347,8 +2700,6 @@
   .buttonGhost,
   .buttonLime,
   .productCard,
-  .fileCard,
-  .fileCardSelected,
   .tagLeft,
   .tagRight,
   .brandMark {
@@ -2389,23 +2740,37 @@
   [data-step] .aiAnswer,
   [data-step] .aiAnswer li,
   [data-step] .outlineItem,
-  [data-step] .fileCard,
-  [data-step] .fileCardSelected,
-  [data-step] .answerCard,
-  [data-step] .sources span,
-  [data-step] .taskGrid > div,
-  [data-step] .progress i,
-  [data-step] .activityCard {
+  [data-step] .chatInput,
+  [data-step] .editorNav,
+  [data-step] .editorNavActive,
+  [data-step] .editorSection:first-child,
+  [data-step] .editorSection:nth-child(2),
+  [data-step] .editorModelCard,
+  [data-step] .editorTag,
+  [data-step] .editorSave,
+  [data-step] .collectionItem,
+  [data-step] .collectionItemActive,
+  [data-step] .collectionHeader,
+  [data-step] .resourceHeader,
+  [data-step] .resourceRowHeader,
+  [data-step] .resourceRow,
+  [data-step] .groupCover,
+  [data-step] .groupInfo,
+  [data-step] .groupTabBar,
+  [data-step] .groupMemberRow,
+  [data-step] .groupPagination,
+  [data-step] .aiAnswerItem,
+  [data-step] .groupMemberPage,
+  [data-step] .pageVisible,
+  [data-step] .pageHidden,
+  [data-step] .pageSlideIn {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
   }
 
-  .genDone {
-    display: inline !important;
-  }
-
-  .genWriting {
-    display: none !important;
+  // 翻页隐藏页在减弱动效下保持隐藏（须位于上述兜底之后），避免两页重叠
+  [data-step] .pageHidden {
+    opacity: 0 !important;
   }
 }

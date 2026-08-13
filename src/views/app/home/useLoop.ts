@@ -34,15 +34,32 @@ export function usePrefersReducedMotion(): boolean {
  * 类阶段时间轴：按 durations 逐段推进 step 索引。
  * - paused：离开视口时冻结计时器，保持当前阶段
  * - reduced：不做循环，直接返回终态（最后一段索引）
+ * - startDelay：首次启动前的延迟（ms），用于等待 Reveal 入场动画完成后再开始循环
+ * - repeatDelay：终态停留时长（ms），停留结束后再循环；0 为旧行为直接循环
+ * - fadeOut：淡出时长（ms），终态停留结束后先渐隐再重置循环
+ * 返回值：[step, fading] — fading 为 true 时调用方应写 data-fading 属性触发 CSS 淡出
  */
 export function useLoop(
   durations: number[],
-  { paused = false, repeat = true }: { paused?: boolean; repeat?: boolean } = {}
-): number {
+  {
+    paused = false,
+    repeat = true,
+    startDelay = 0,
+    repeatDelay = 0,
+    fadeOut = 0,
+  }: {
+    paused?: boolean;
+    repeat?: boolean;
+    startDelay?: number;
+    repeatDelay?: number;
+    fadeOut?: number;
+  } = {}
+): [number, boolean] {
   const reduced = usePrefersReducedMotion();
   // durations 视为挂载时确定、不随渲染变化的常量，用 ref 稳定引用以免计时器被每次渲染重置
   const durationsRef = useRef(durations);
   const [step, setStep] = useState(0);
+  const [fading, setFading] = useState(false);
 
   /**
    * @wisepen-manual-effect
@@ -60,8 +77,28 @@ export function useLoop(
         const next = s + 1;
         if (next >= durationsRef.current.length) {
           if (!repeat) return;
-          setStep(0);
-          tick(0);
+          // 终态停留 → 淡出 → 重置循环
+          if (repeatDelay > 0) {
+            timer = setTimeout(() => {
+              if (stopped) return;
+              if (fadeOut > 0) {
+                setFading(true);
+                timer = setTimeout(() => {
+                  if (stopped) return;
+                  setFading(false);
+                  setStep(0);
+                  tick(0);
+                }, fadeOut);
+              } else {
+                setStep(0);
+                tick(0);
+              }
+            }, repeatDelay);
+          } else {
+            // 无停留：旧行为，直接循环回到 step0
+            setStep(0);
+            tick(0);
+          }
           return;
         }
         setStep(next);
@@ -72,13 +109,18 @@ export function useLoop(
     timer = setTimeout(() => {
       setStep(0);
       tick(0);
-    }, 0);
+    }, startDelay);
     return () => {
       stopped = true;
       if (timer) clearTimeout(timer);
     };
-  }, [paused, reduced, repeat]);
+  }, [paused, reduced, repeat, repeatDelay, fadeOut]);
+
+  // 挂起时重置 fading 状态，避免重新进入视口时残留淡出标记
+  useEffect(() => {
+    if (paused) setFading(false);
+  }, [paused]);
 
   // reduced 时不做循环演出，直接停在终态（全部可见）
-  return reduced ? durations.length - 1 : step;
+  return reduced ? [durations.length - 1, false] : [step, fading];
 }

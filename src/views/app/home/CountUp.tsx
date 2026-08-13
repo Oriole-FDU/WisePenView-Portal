@@ -11,7 +11,7 @@ type CountUpProps = {
  * 数字滚动：进入视口后从 0 滚到目标值（ease-out）。
  * 系统减弱动效 / 无 IntersectionObserver 环境直接显示终值。
  */
-export default function CountUp({ to, duration = 1100, className }: CountUpProps) {
+export default function CountUp({ to, duration = 600, className }: CountUpProps) {
   const ref = useRef<HTMLSpanElement | null>(null);
   const reduced = usePrefersReducedMotion();
   // 减弱动效或无 IO 时不滚动，直接渲染终值
@@ -42,7 +42,7 @@ export default function CountUp({ to, duration = 1100, className }: CountUpProps
         };
         raf = requestAnimationFrame(tick);
       },
-      { threshold: 0.4 }
+      { threshold: 0.01 }
     );
     observer.observe(el);
     return () => {

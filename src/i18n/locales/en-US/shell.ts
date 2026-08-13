@@ -141,6 +141,18 @@ const enUSShell = {
       tagLeft: '<1/> key points extracted',
       tagRight: 'Connecting to your knowledge',
       scrollNote: 'Explore WisePen',
+      conversations: ['Cognitive Science · Attention', 'Paper Writing · Methods', 'AI Knowledge Base'],
+      chatNew: '+ New',
+      chatAiName: 'Wise AI',
+      chatUserMsg: 'Summarize the main theoretical models of attention in cognitive science.',
+      chatAiMsgLead: 'Here are the core models of attention in cognitive science:',
+      chatAiMsgItems: [
+        'Filter model — Broadbent’s early selection theory, filtering by physical features.',
+        'Attenuation model — Treisman: information is not blocked but weakened.',
+        'Response selection model — Deutsch & Deutsch: all inputs processed, some trigger responses.',
+        'Central capacity model — Kahneman: attention resources are limited and allocation varies with task complexity.',
+      ],
+      chatPlaceholder: 'Type your question…',
     },
     manifesto: {
       kicker: 'A NEW WAY TO THINK',
@@ -174,6 +186,25 @@ const enUSShell = {
         { title: 'AI Research Figures', text: 'Turn research logic into clear charts' },
         { title: 'AI Paper Writing', text: 'Structure ideas and expression from sources' },
       ],
+      agentEditor: {
+        navTitle: 'Configuration',
+        nav: ['Basic info', 'System prompt', 'Model', 'Capabilities & tools', 'Memory'],
+        basicLabel: 'Assistant name',
+        basicValue: 'AI Paper Writing Assistant',
+        basicHint: 'An AI writing assistant for research papers',
+        promptLabel: 'System prompt',
+        promptLines: [
+          'You are a rigorous academic writing assistant.',
+          'Structure content based on the materials provided,',
+          'keeping academic accuracy.',
+        ],
+        modelLabel: 'Model',
+        modelText: 'WisePen Paper Model',
+        modelMeta: 'Fast · Long-form support',
+        capabilityLabel: 'Capabilities',
+        capabilities: ['Outline generation', 'Language polish', 'Citation', 'Figure parsing'],
+        saveBtn: 'Save configuration',
+      },
     },
     knowledgeFeature: {
       section: 'Personal Knowledge Base',
@@ -194,6 +225,28 @@ const enUSShell = {
       answerText:
         'All three sources agree that attention is not a single resource but a set of interacting control mechanisms.',
       sources: ['Source 1 · CognitivePsychology P.36', 'Source 2 · Attention mechanisms review'],
+      favorites: {
+        title: 'Favorites',
+        newCollection: 'New collection',
+        collections: [
+          { name: 'Cognitive Psychology', count: 24 },
+          { name: 'Research Methods', count: 18 },
+          { name: 'Paper Writing', count: 12 },
+          { name: 'Course Materials', count: 36 },
+        ],
+        resources: {
+          header: 'Name',
+          modified: 'Modified',
+          size: 'Size',
+          items: [
+            { name: 'Experiment design', type: 'folder', date: '2026-08-10', size: '—' },
+            { name: 'CognitivePsychology.pdf', type: 'PDF', date: '2026-08-09', size: '12.4 MB' },
+            { name: 'Class notes collection.docx', type: 'DOC', date: '2026-08-08', size: '3.2 MB' },
+            { name: 'Attention mechanisms review', type: 'link', date: '2026-08-07', size: '—' },
+          ],
+        },
+        folderName: 'Experiment design',
+      },
     },
     teamFeature: {
       section: 'Team Space',
@@ -221,6 +274,29 @@ const enUSShell = {
       activityTime: 'Just now',
       classTitle: 'Class AI teaching assistant',
       classText: 'Answered <1/> course questions this week',
+      groupDetail: {
+        title: 'Cognitive Science Group',
+        desc: 'A cognitive science team studying attention mechanisms and learning efficiency',
+        tabs: ['Files', 'Members', 'Description', 'Settings'],
+        members: [
+          { name: 'Prof. Lin', role: 'OWNER', avatar: 'Lin' },
+          { name: 'Zhou', role: 'ADMIN', avatar: 'Zhou' },
+          { name: 'Chen', role: 'MEMBER', avatar: 'Chen' },
+          { name: 'Wang', role: 'MEMBER', avatar: 'Wang' },
+        ],
+        membersPage2: [
+          { name: 'Zhao', role: 'MEMBER', avatar: 'Zhao' },
+          { name: 'Sun', role: 'MEMBER', avatar: 'Sun' },
+          { name: 'Qian', role: 'MEMBER', avatar: 'Qian' },
+          { name: 'Li', role: 'MEMBER', avatar: 'Li' },
+        ],
+        roleLabels: {
+          OWNER: 'Owner',
+          ADMIN: 'Admin',
+          MEMBER: 'Member',
+        },
+        pagination: 'Page {{page}} of 2',
+      },
     },
     scenes: {
       kicker: 'FOR EVERY MIND',
