@@ -287,17 +287,30 @@
 .orbOne {
   width: 500px;
   height: 500px;
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  background: radial-gradient(
+    circle at 30% 40%,
+    color-mix(in srgb, var(--accent) 22%, transparent),
+    color-mix(in srgb, var(--accent) 6%, transparent)
+  );
+  background-size: 200% 200%;
   left: -180px;
   top: -110px;
+  animation: orbFlow 8s ease-in-out infinite;
 }
 
 .orbTwo {
   width: 460px;
   height: 460px;
-  background: color-mix(in srgb, @lime 16%, transparent);
+  background: radial-gradient(
+    circle at 70% 60%,
+    color-mix(in srgb, @lime 26%, transparent),
+    color-mix(in srgb, @lime 6%, transparent)
+  );
+  background-size: 200% 200%;
   right: -160px;
   top: -40px;
+  animation: orbFlow 10s ease-in-out infinite;
+  animation-delay: -3s;
 }
 
 .appWindow {
@@ -692,51 +705,96 @@
 .threeWords {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 0;
   font-size: 14px;
   font-weight: 600;
   color: @ink;
 
-  i {
-    width: 35px;
-    height: 1px;
-    background: #b7bdb9;
-    animation: pulseLine 2.4s ease-in-out infinite;
-  }
-
-  .wordChip {
-    display: inline-flex;
+  // 进度条步骤容器
+  .stepItem {
+    display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 10px 4px 6px;
-    border-radius: 8px;
-    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
-    cursor: default;
+    gap: 12px;
+    position: relative;
 
-    b {
-      display: inline-flex;
+    .stepCircle {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
       align-items: center;
       justify-content: center;
-      width: 22px;
-      height: 22px;
-      border-radius: 6px;
+      font-size: 13px;
       font-weight: 700;
-      font-size: 11px;
       color: #fff;
-      background: @accent;
-      animation: wordGlow 3s ease-in-out infinite;
+      background: @line;
+      transition: background 0.6s ease, box-shadow 0.6s ease;
+      position: relative;
+      z-index: 1;
+
+      &.active,
+      [data-state='active'] & {
+        background: @accent;
+        box-shadow: 0 0 0 4px rgba(23, 160, 110, 0.2);
+      }
+
+      &.done,
+      [data-state='done'] & {
+        background: @accent;
+      }
+    }
+
+    .stepLabel {
+      font-size: 14px;
+      font-weight: 600;
+      color: @preview-muted;
+      transition: color 0.6s ease;
+      white-space: nowrap;
+
+      &.active,
+      [data-state='active'] & {
+        color: @preview-ink;
+      }
+
+      &.done,
+      [data-state='done'] & {
+        color: @preview-ink;
+      }
     }
   }
-}
 
-@keyframes pulseLine {
-  0%, 100% { opacity: 0.35; }
-  50% { opacity: 0.9; }
-}
+  // 连接线（进度条轨道）
+  .stepConnector {
+    flex-shrink: 0;
+    position: relative;
+    width: 60px;
+    height: 3px;
+    border-radius: 2px;
+    background: @line;
+    margin: 0 8px;
+    overflow: hidden;
 
-@keyframes wordGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(23, 160, 110, 0); }
-  50% { box-shadow: 0 0 0 6px rgba(23, 160, 110, 0.14); }
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 2px;
+      background: @accent;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    &.fill::after,
+    &[data-state='half']::after {
+      transform: scaleX(0.5);
+    }
+
+    &[data-state='done']::after {
+      transform: scaleX(1);
+    }
+  }
 }
 
 .sectionHead {
@@ -1052,7 +1110,10 @@
 }
 
 .editorPromptLine {
-  white-space: pre-line;
+  // 固定行高 + 溢出隐藏：输入框高度恒定，不随文字数量或换行自适应变化
+  height: 17px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .editorModelCard {
@@ -1134,6 +1195,100 @@
   &[data-fading='true'] {
     opacity: 0;
     transition: opacity 0.26s ease;
+  }
+}
+
+// 散落文件层：绝对定位覆盖在主窗口之上，pointer-events 穿透不拦截交互
+.scatteredLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+// 散落文件卡片：迷你窗口风格，带旋转与轻微浮动呼吸，呼应"散落的信息"
+.scatterCard {
+  position: absolute;
+  width: 110px;
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(30, 40, 35, 0.14);
+  overflow: hidden;
+  rotate: var(--rot, 0deg);
+  animation: cardFloat 4s ease-in-out infinite;
+  animation-delay: calc(var(--delay, 0s) * -1);
+
+  // 窗口标题栏
+  .scatterCardBar {
+    display: flex;
+    gap: 3px;
+    padding: 5px 8px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .scatterCardDot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.14);
+  }
+
+  .scatterCardBody {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px 8px;
+  }
+
+  .scatterCardIcon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+
+  .scatterCardIcon :global(svg) {
+    width: 11px;
+    height: 11px;
+    display: block;
+  }
+
+  .scatterCardName {
+    font-size: 8px;
+    color: @preview-ink;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}
+
+// 散落卡片入场：轻微下沉 + 缩小淡入，保持各自静态旋转角不变（不额外倾斜再回正）
+@keyframes scatterIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.85) rotate(var(--rot, 0deg));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(var(--rot, 0deg));
+  }
+}
+
+// 常驻浮动：卡片各自以不同相位轻微上下漂移，营造"散落"的松弛感
+@keyframes cardFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(var(--float-y, -4px));
   }
 }
 
@@ -1266,10 +1421,29 @@
   white-space: nowrap;
 }
 
+// 资源类型图标（lucide SVG）：按文件类型着色，呼应原 emoji 的色彩语义
 .resourceIconFolder,
-.resourceIconFile {
-  font-size: 12px;
+.resourceIconPdf,
+.resourceIconDoc,
+.resourceIconLink {
+  display: inline-flex;
   flex-shrink: 0;
+}
+
+.resourceIconFolder {
+  color: #c09a3e; // 目录 · 琥珀
+}
+
+.resourceIconPdf {
+  color: #d65b5b; // PDF · 红
+}
+
+.resourceIconDoc {
+  color: #4a7fc4; // DOC · 蓝
+}
+
+.resourceIconLink {
+  color: #4a9a73; // 链接 · 绿
 }
 
 .resourceDate,
@@ -1284,15 +1458,36 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 35px;
+}
 
-  span {
-    font-size: 9px;
-    border: 1px solid @line;
-    background: #ffffff;
-    border-radius: 99px;
-    padding: 8px 11px;
-    color: @muted;
+.teamFeatureChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  font-size: 9px;
+  border: 1px solid @line;
+  background: #ffffff;
+  border-radius: 99px;
+  padding: 8px 14px;
+  color: @muted;
+  cursor: default;
+  transition: border-color 0.3s, color 0.3s, box-shadow 0.3s;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: teamTagIn 0.5s ease-out forwards;
+  animation-delay: calc(0.15s * var(--i));
+  will-change: transform, opacity;
+
+  &:hover {
+    border-color: @accent;
+    color: @accent-deep;
+    box-shadow: 0 4px 16px rgba(45, 169, 174, 0.15);
   }
+}
+
+@keyframes teamTagIn {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .teamDemo {
@@ -1341,24 +1536,24 @@
   }
 }
 
+// y = 0.5·sin(x) 白线正弦波，200px tile，首尾高度一致（0 点相位），repeat-x 无缝衔接
 .waveLine {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 38%;
-  height: 20px;
+  height: 24px;
   pointer-events: none;
   z-index: 1;
-  opacity: 0.45;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 24'%3E%3Cpath d='M0 12 C10 1, 20 1, 30 12 C40 23, 50 23, 60 12' fill='none' stroke='rgba(255,255,255,0.55)' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-size: 60px 100%;
   background-repeat: repeat-x;
-  animation: waveSlide 3s linear infinite;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 viewBox%3D%220 0 200 24%22%3E%0A  %3Cpath d%3D%22M0.0 12.00L5.0 13.25L10.0 14.47L15.0 15.63L20.0 16.70L25.0 17.66L30.0 18.47L35.0 19.13L40.0 19.61L45.0 19.90L50.0 20.00L55.0 19.90L60.0 19.61L65.0 19.13L70.0 18.47L75.0 17.66L80.0 16.70L85.0 15.63L90.0 14.47L95.0 13.25L100.0 12.00L105.0 10.75L110.0 9.53L115.0 8.37L120.0 7.30L125.0 6.34L130.0 5.53L135.0 4.87L140.0 4.39L145.0 4.10L150.0 4.00L155.0 4.10L160.0 4.39L165.0 4.87L170.0 5.53L175.0 6.34L180.0 7.30L185.0 8.37L190.0 9.53L195.0 10.75L200.0 12.00%22 fill%3D%22none%22 stroke%3D%22white%22 stroke-width%3D%221.5%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 opacity%3D%220.8%22/%3E%0A%3C/svg%3E");
+  background-size: 200px 100%;
+  animation: waveSlide 6s linear infinite;
 }
 
 @keyframes waveSlide {
   0% { background-position-x: 0; }
-  100% { background-position-x: -60px; }
+  100% { background-position-x: -200px; }
 }
 
 .groupBadge {
@@ -1427,13 +1622,16 @@
 .groupMemberList {
   padding-top: 6px;
   position: relative;
+  overflow: hidden;
 }
 
-// 翻页容器：两页同时存在，通过 pageVisible/pageHidden 控制显示，
-// 配合 pageSlideIn 产生从右滑入的翻页效果，避免 key 重挂载导致的闪现
-// （锚定于最近定位祖先 .groupMemberList，绝对定位不会缩回左上角）
+// 翻页容器：两页同时存在（避免 key 重挂载闪现），
+// 当前页随翻页横向滑出（→ -100%），下一页从右侧滑入（+100% → 0），
+// 由 .groupMemberList 的 overflow: hidden 裁剪，形成连贯的轮播式滑动。
 .groupMemberPage {
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    opacity 0.4s ease,
+    transform 0.42s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .pageVisible {
@@ -1444,7 +1642,7 @@
 
 .pageHidden {
   opacity: 0;
-  transform: translateX(-6px);
+  transform: translateX(-100%);
   pointer-events: none;
   position: absolute;
   top: 0;
@@ -1452,8 +1650,9 @@
   width: 100%;
 }
 
+// 下一页的预置位：停在右侧视口外，翻页时滑入
 .pageSlideIn {
-  transform: translateX(16px);
+  transform: translateX(100%);
 }
 
 .pageSlideIn.pageVisible {
@@ -1926,10 +2125,25 @@
   }
 
   .threeWords {
-    gap: 10px;
+    gap: 0;
 
-    i {
-      width: 18px;
+    .stepConnector {
+      width: 28px;
+      margin: 0 4px;
+    }
+
+    .stepItem {
+      gap: 8px;
+
+      .stepCircle {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+      }
+
+      .stepLabel {
+        font-size: 12px;
+      }
     }
   }
 
@@ -2155,51 +2369,40 @@
     }
   }
 
-  @keyframes scan {
-    0%,
-    100% {
-      opacity: 0;
-    }
-    45%,
-    60% {
-      opacity: 1;
-    }
-  }
-
   // 演出元素进入动画全部升到合成层，避免首帧布局抖动
   [data-step] {
     will-change: transform, opacity;
   }
 
-  // manifesto 三词依次点亮（挂 revealVisible）
-  .threeWords .wordChip,
-  .threeWords i {
+  // manifesto 进度条步骤依次点亮（挂 revealVisible）
+  .threeWords .stepItem,
+  .threeWords .stepConnector {
     opacity: 0;
     transform: translateY(8px);
   }
 
-  .revealVisible .threeWords .wordChip,
-  .revealVisible .threeWords i {
+  .revealVisible .threeWords .stepItem,
+  .revealVisible .threeWords .stepConnector {
     animation: stepIn 0.4s ease-out both;
   }
 
-  .revealVisible .threeWords .wordChip:nth-child(1) {
+  .revealVisible .threeWords .stepItem:nth-child(1) {
     animation-delay: 0.1s;
   }
 
-  .revealVisible .threeWords i:nth-child(2) {
+  .revealVisible .threeWords .stepConnector:nth-child(2) {
     animation-delay: 0.3s;
   }
 
-  .revealVisible .threeWords .wordChip:nth-child(3) {
+  .revealVisible .threeWords .stepItem:nth-child(3) {
     animation-delay: 0.5s;
   }
 
-  .revealVisible .threeWords i:nth-child(4) {
+  .revealVisible .threeWords .stepConnector:nth-child(4) {
     animation-delay: 0.7s;
   }
 
-  .revealVisible .threeWords .wordChip:nth-child(5) {
+  .revealVisible .threeWords .stepItem:nth-child(5) {
     animation-delay: 0.9s;
   }
 
@@ -2215,28 +2418,10 @@
     }
   }
 
-  .appWindow::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 70px;
-    pointer-events: none;
-    z-index: 4;
-    background: linear-gradient(180deg, rgba(121, 230, 178, 0.16), transparent);
-    opacity: 0;
-    will-change: opacity;
-  }
-
-  .appWindow[data-step='0']::after {
-    animation: scan 1.5s ease-in-out infinite;
-  }
-
+  .appWindow[data-step='0']::after,
   .appWindow[data-step='1']::after,
   .appWindow[data-step='2']::after {
-    animation: scan 3s ease-in-out infinite;
-    opacity: 0.3;
+    display: none;
   }
 
   // hero：思考圆点
@@ -2285,15 +2470,6 @@
     background: currentColor;
   }
 
-  .aiDemo[data-step='0'] .caret,
-  .aiDemo[data-step='2'] .caret {
-    opacity: 0;
-  }
-
-  .aiDemo[data-step='1'] .caret {
-    opacity: 1;
-    animation: blinkStep 1s linear infinite;
-  }
   .appWindow[data-step='0'] .caret {
     opacity: 0;
   }
@@ -2476,6 +2652,19 @@
 
   // 知识库 demo：左侧收藏集从左侧滑入，右侧资源从右侧滑入，左右并行涌现
   // 循环边界缓冲：所有 delay 加 0.01s，避免 2→0 切换瞬间跳回 from 关键帧
+  // 知识库 demo：左侧收藏集从左侧滑入，右侧资源从右侧滑入，左右并行涌现
+  // 循环边界缓冲：所有 delay 加 0.01s，避免 2→0 切换瞬间跳回 from 关键帧
+  .knowledgeDemo[data-step='0'] .scatterCard {
+    opacity: 0;
+    animation: scatterIn 0.5s ease-out both;
+
+    &:nth-child(1) { animation-delay: 0.31s; }
+    &:nth-child(2) { animation-delay: 0.56s; }
+    &:nth-child(3) { animation-delay: 0.81s; }
+    &:nth-child(4) { animation-delay: 1.06s; }
+    &:nth-child(5) { animation-delay: 1.31s; }
+  }
+
   .knowledgeDemo[data-step='0'] .collectionItem,
   .knowledgeDemo[data-step='0'] .collectionItemActive {
     opacity: 0;
@@ -2567,7 +2756,9 @@
   .knowledgeDemo[data-step='1'] .resourceRowHeader,
   .knowledgeDemo[data-step='2'] .resourceRowHeader,
   .knowledgeDemo[data-step='1'] .resourceRow,
-  .knowledgeDemo[data-step='2'] .resourceRow {
+  .knowledgeDemo[data-step='2'] .resourceRow,
+  .knowledgeDemo[data-step='1'] .scatterCard,
+  .knowledgeDemo[data-step='2'] .scatterCard {
     opacity: 1;
     transform: none;
   }
@@ -2686,6 +2877,29 @@
       opacity: 0.9;
     }
   }
+
+  // orb 弥散流动：仅动 transform/opacity，避开渐变重采样造成的摩尔纹
+  .orbOne,
+  .orbTwo {
+    animation: orbFlow 8s ease-in-out infinite;
+  }
+
+  .orbTwo {
+    animation-duration: 10s;
+    animation-delay: -3s;
+  }
+
+  @keyframes orbFlow {
+    0%,
+    100% {
+      transform: translate3d(-3%, -2%, 0) scale(1);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translate3d(3%, 4%, 0) scale(1.15);
+      opacity: 1;
+    }
+  }
 }
 
 // 减弱动效
@@ -2720,9 +2934,6 @@
   }
 
   // 叙事循环兜底：演出元素强制静态可见、停用常驻动画
-  .appWindow::after {
-    display: none;
-  }
 
   .dots i,
   .tagRight i {
@@ -2735,8 +2946,18 @@
     animation: none;
   }
 
-  .threeWords span,
-  .threeWords i,
+  // 正弦波定格为静态线条
+  .waveLine {
+    animation: none;
+  }
+
+  // 散落文件卡片浮动/入场定格为静态
+  .scatterCard {
+    animation: none;
+  }
+
+  .threeWords .stepItem,
+  .threeWords .stepConnector,
   [data-step] .aiAnswer,
   [data-step] .aiAnswer li,
   [data-step] .outlineItem,
@@ -2754,6 +2975,7 @@
   [data-step] .resourceHeader,
   [data-step] .resourceRowHeader,
   [data-step] .resourceRow,
+  [data-step] .scatterCard,
   [data-step] .groupCover,
   [data-step] .groupInfo,
   [data-step] .groupTabBar,

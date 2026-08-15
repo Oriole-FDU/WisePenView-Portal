@@ -1,9 +1,10 @@
 import { REGISTER_URL, openPortalLink } from '@/config/portalLinks';
 import logoIconAqua from '@/assets/logos/logo-icon-aqua.svg';
-import { Fragment, useRef } from 'react';
+import { FilePenLine, FileText, Folder, Globe, GraduationCap, Grid3x3, Link2, Monitor, NotebookText, Table2, UserCog, Users } from 'lucide-react';
+import { Fragment, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import CountUp from './CountUp';
 import DemoPlayer from './DemoPlayer';
+import RollingNumber from './RollingNumber';
 import GlassBackdrop from './GlassBackdrop';
 import Reveal from './Reveal';
 import { useDemoStep } from './useDemoStep';
@@ -38,6 +39,23 @@ function IconNote() {
       <path d="M8 13h6" />
     </svg>
   );
+}
+
+/** 知识库支持格式的精美图标徽章（Lucide） */
+function FormatIcon({ kind }: { kind: string }) {
+  const size = 11;
+  switch (kind) {
+    case 'pdf':
+      return <FileText size={size} strokeWidth={2.5} />;
+    case 'word':
+      return <FilePenLine size={size} strokeWidth={2.5} />;
+    case 'ppt':
+      return <Monitor size={size} strokeWidth={2.5} />;
+    case 'excel':
+      return <Table2 size={size} strokeWidth={2.5} />;
+    default:
+      return <Grid3x3 size={size} strokeWidth={2.5} />;
+  }
 }
 
 function IconChart() {
@@ -85,6 +103,15 @@ function ProductIcon({ kind }: { kind: 'note' | 'chart' | 'text' }) {
   return <IconText />;
 }
 
+/** 资源类型图标（lucide）：文件夹 / PDF / DOC / 链接，颜色由 .resourceIcon* 类控制 */
+function FileTypeIcon({ type }: { type: string }) {
+  const size = 12;
+  if (type === 'folder') return <Folder size={size} aria-hidden="true" />;
+  if (type === 'PDF') return <FileText size={size} aria-hidden="true" />;
+  if (type === 'DOC') return <FilePenLine size={size} aria-hidden="true" />;
+  return <Link2 size={size} aria-hidden="true" />;
+}
+
 /** 打字机文本：逐字渲染 + 光标闪烁（active 由外部阶段控制） */
 function TypewriterLine({ text, active, speed = 30 }: { text: string; active: boolean; speed?: number }) {
   const count = useTypewriter(text, speed, active);
@@ -93,6 +120,61 @@ function TypewriterLine({ text, active, speed = 30 }: { text: string; active: bo
       {text.slice(0, count)}
       <span className={styles.caret} aria-hidden="true" />
     </span>
+  );
+}
+
+/**
+ * 顺序打字机（多行）：上一行打完后下一行紧接着开始，逐行依次输出。
+ * active 由外部阶段控制：关闭（step 0 / 离开视口）时整段清空，呈现空白输入框；
+ * 重新激活时从第一行重新打字，实现每次循环重打。
+ */
+function PromptTyping({ lines, active }: { lines: string[]; active: boolean }) {
+  const [lineIdx, setLineIdx] = useState(0);
+  const [count, setCount] = useState(0);
+  const linesRef = useRef(lines);
+  linesRef.current = lines;
+
+  /**
+   * @wisepen-manual-effect
+   * 执行时机：active 变化时启动/停止逐字计时器。
+   * 不可替代原因：打字机必须逐字定时推进，setInterval 是唯一可靠的时序来源。
+   * cleanup：清除计时器。
+   */
+  useEffect(() => {
+    // 未激活时整段清空，保证 step 0 是空白输入框
+    if (!active) {
+      setLineIdx(0);
+      setCount(0);
+      return;
+    }
+
+    let li = 0;
+    let n = 0;
+    const timer = setInterval(() => {
+      const len = linesRef.current[li].length;
+      n += 1;
+      if (n > len) {
+        li += 1;
+        if (li >= linesRef.current.length) {
+          clearInterval(timer);
+          return;
+        }
+        n = 1;
+        setLineIdx(li);
+      }
+      setCount(n);
+    }, 30);
+    return () => clearInterval(timer);
+  }, [active]);
+
+  return (
+    <>
+      {lines.map((line, i) => (
+        <div className={styles.editorPromptLine} key={i}>
+          {i < lineIdx ? line : i === lineIdx ? line.slice(0, count) : ''}
+        </div>
+      ))}
+    </>
   );
 }
 
@@ -175,16 +257,7 @@ function AgentEditorDemo() {
         <div className={styles.editorSection}>
           <label className={styles.editorLabel}>{t('home.aiFeature.agentEditor.promptLabel')}</label>
           <div className={styles.editorPromptArea}>
-            {promptLines.map((line, i) => (
-              <div className={styles.editorPromptLine} key={i}>
-                {i === 1 && aiTyping ? (
-                  <TypewriterLine text={line} active={aiTyping} />
-                ) : (
-                  <span>{line}</span>
-                )}
-              </div>
-            ))}
-            <span className={styles.caret} aria-hidden="true" />
+            <PromptTyping lines={promptLines} active={aiTyping} />
           </div>
         </div>
         <div className={styles.editorSection}>
@@ -207,6 +280,66 @@ function AgentEditorDemo() {
         </div>
         <div className={styles.editorSave}>{t('home.aiFeature.agentEditor.saveBtn')}</div>
       </div>
+    </div>
+  );
+}
+
+/** 散落文件卡片（装饰）：围绕主收藏夹窗口散落摆放，模拟"散落的信息"主题 */
+function ScatteredFiles() {
+  const { t } = useTranslation('shell');
+  const files = t('home.knowledgeFeature.files', { returnObjects: true }) as { ext: string; name: string; meta: string }[];
+  const [stepEl, step] = useDemoStep();
+
+  function renderIcon(ext: string) {
+    const size = 14;
+    if (ext === 'PDF') return <FileText size={size} aria-hidden="true" />;
+    if (ext === 'Html') return <Globe size={size} aria-hidden="true" />;
+    if (ext === 'DOC') return <FilePenLine size={size} aria-hidden="true" />;
+    if (ext === 'link') return <Link2 size={size} aria-hidden="true" />;
+    return <NotebookText size={size} aria-hidden="true" />;
+  }
+
+  // 每张卡片定义不同的旋转、偏移和浮动偏移
+  const cards = [
+    { ext: 'PDF', name: files[0]?.name ?? '认知心理学研究.pdf', color: '#e74c3c', top: '4%', left: '2%', rotate: -4.5, floatY: -6 },
+    { ext: 'Html', name: files[1]?.name ?? '注意力机制综述', color: '#2e86de', top: '12%', right: '4%', rotate: 3.2, floatY: 8 },
+    { ext: 'DOC', name: files[2]?.name ?? '课堂笔记合集.docx', color: '#2980b9', top: '48%', left: '3%', rotate: -2.8, floatY: -4 },
+    { ext: 'link', name: '论文参考文献', color: '#8e44ad', bottom: '6%', right: '3%', rotate: 5.5, floatY: 5 },
+    { ext: 'note', name: '实验数据记录', color: '#d35400', top: '38%', right: '2%', rotate: -6.2, floatY: -7 },
+  ];
+
+  return (
+    <div ref={stepEl} className={styles.scatteredLayer} aria-hidden="true">
+      {cards.map((card, i) => (
+        <div
+          key={i}
+          className={styles.scatterCard}
+          style={
+            {
+              '--rot': `${card.rotate}deg`,
+              '--float-y': `${card.floatY}px`,
+              '--card-color': card.color,
+              '--i': i,
+              top: card.top,
+              left: card.left as string | undefined,
+              right: card.right as string | undefined,
+              bottom: card.bottom as string | undefined,
+            } as CSSProperties
+          }
+        >
+          <div className={styles.scatterCardBar}>
+            <span className={styles.scatterCardDot} />
+            <span className={styles.scatterCardDot} />
+            <span className={styles.scatterCardDot} />
+          </div>
+          <div className={styles.scatterCardBody}>
+            <span className={styles.scatterCardIcon} style={{ background: card.color }}>
+              {renderIcon(card.ext)}
+            </span>
+            <span className={styles.scatterCardName}>{card.name}</span>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -247,7 +380,19 @@ function FavoritesDemo() {
           {resourceItems.map((item, i) => (
             <div className={styles.resourceRow} key={item.name}>
               <span className={styles.resourceName}>
-                <span className={item.type === 'folder' ? styles.resourceIconFolder : styles.resourceIconFile}>{item.type === 'folder' ? '📁' : item.type === 'PDF' ? '📄' : item.type === 'DOC' ? '📝' : '🔗'}</span>
+                <span
+                  className={
+                    item.type === 'folder'
+                      ? styles.resourceIconFolder
+                      : item.type === 'PDF'
+                        ? styles.resourceIconPdf
+                        : item.type === 'DOC'
+                          ? styles.resourceIconDoc
+                          : styles.resourceIconLink
+                  }
+                >
+                  <FileTypeIcon type={item.type} />
+                </span>
                 {item.name}
               </span>
               <span className={styles.resourceDate}>{item.date}</span>
@@ -407,6 +552,45 @@ function Home() {
 
   const manifestoWords = t('home.manifesto.words', { returnObjects: true }) as string[];
 
+  // 宣言三步渐进动效：进入视口后依次推进 idle→active→done
+  const [threeStage, setThreeStage] = useState(0);
+  const manifestoRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = manifestoRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    let timer: ReturnType<typeof setTimeout>;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        obs.disconnect();
+        // 每步间隔 800ms 推进
+        [800, 1600, 2400].forEach((delay, step) => {
+          timer = setTimeout(() => setThreeStage(step + 1), delay);
+        });
+      },
+      { threshold: 0.3 }
+    );
+    obs.observe(el);
+    return () => {
+      obs.disconnect();
+      clearTimeout(timer);
+    };
+  }, []);
+
+  const stageOf = (i: number): 'idle' | 'active' | 'done' => {
+    // 第 s 步时：前 s 项完成、当前项激活、其余待触达
+    if (threeStage > i) return 'done';
+    if (threeStage === i) return 'active';
+    return 'idle';
+  };
+
+  const connectorStage = (i: number): 'idle' | 'half' | 'done' => {
+    // 第 i 条连接线（位于 item i-1 与 item i 之间）
+    if (threeStage >= i + 1) return 'done';
+    if (threeStage >= i) return 'half';
+    return 'idle';
+  };
+
   return (
     <main className={styles.page}>
       {/* 装饰性磨砂玻璃螺旋背景带（AI → FAQ 连续贯通，纯装饰不拦截交互） */}
@@ -455,7 +639,7 @@ function Home() {
               <span>✦</span>
               <b>
                 <Trans ns="shell" i18nKey="home.hero.tagLeft">
-                  <CountUp to={8} duration={600} />
+                  <RollingNumber base={8} interval={2200} />
                 </Trans>
               </b>
             </div>
@@ -483,13 +667,30 @@ function Home() {
         <Reveal delay={120}>
           <div className={styles.manifestoBottom}>
             <p>{t('home.manifesto.body')}</p>
-            <div className={styles.threeWords}>
+            <div className={styles.threeWords} ref={manifestoRef}>
               {manifestoWords.map((word, i) => (
                 <Fragment key={word}>
-                  {i > 0 && <i />}
-                  <span className={styles.wordChip}>
-                    <b aria-hidden="true">{['✦', '→', '★'][i]}</b>
-                    {word}
+                  {i > 0 && (
+                    <span
+                      className={styles.stepConnector}
+                      data-state={connectorStage(i)}
+                    />
+                  )}
+                  <span className={styles.stepItem} data-state={stageOf(i)}>
+                    <b
+                      className={`${styles.stepCircle} ${
+                        stageOf(i) === 'done' ? styles.done : stageOf(i) === 'active' ? styles.active : ''
+                      }`}
+                    >
+                      {String(i + 1).padStart(2, '0')}
+                    </b>
+                    <span
+                      className={`${styles.stepLabel} ${
+                        stageOf(i) === 'done' ? styles.done : stageOf(i) === 'active' ? styles.active : ''
+                      }`}
+                    >
+                      {word}
+                    </span>
                   </span>
                 </Fragment>
               ))}
@@ -538,6 +739,7 @@ function Home() {
       <section className={styles.featureSectionKnowledge} id="knowledge">
         <div className={styles.featureGridReverse}>
           <Reveal className={styles.knowledgeDemo} delay={120} data-demo="knowledge" data-step="0" data-layout="imageRight">
+            <ScatteredFiles />
             <FavoritesDemo />
           </Reveal>
 
@@ -558,10 +760,11 @@ function Home() {
             <div className={styles.formatRow}>
               {formats.map((format) => {
                 const fmt = format.toLowerCase();
-                const icon = fmt === 'pdf' ? '▣' : fmt === 'word' ? 'W' : fmt === 'ppt' ? '▴' : fmt === 'excel' ? '⊞' : '□';
                 return (
                   <span className={styles.formatItem} data-format={fmt} key={format}>
-                    <i>{icon}</i>
+                    <i>
+                      <FormatIcon kind={fmt} />
+                    </i>
                     {format}
                   </span>
                 );
@@ -585,9 +788,20 @@ function Home() {
             </h2>
             <p>{t('home.teamFeature.lead')}</p>
             <div className={styles.teamFeatures}>
-              {teamTags.map((tag) => (
-                <span key={tag}>{tag}</span>
-              ))}
+              {teamTags.map((tag, i) => {
+                const iconMap = [
+                  UserCog,
+                  GraduationCap,
+                  Users,
+                ];
+                const Icon = iconMap[i] ?? UserCog;
+                return (
+                  <span key={tag} className={styles.teamFeatureChip} style={{ '--i': i } as CSSProperties}>
+                    <Icon size={13} strokeWidth={2.2} />
+                    {tag}
+                  </span>
+                );
+              })}
             </div>
           </Reveal>
 

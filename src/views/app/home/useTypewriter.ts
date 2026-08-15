@@ -26,7 +26,8 @@ export function useTypewriter(
   useEffect(() => {
     // 无文本或未激活时冻结当前进度（不跳到全文），由外部阶段决定何时展示完整态
     if (!active || !text) {
-      if (!text) { setCount(0); doneRef.current = false; }
+      if (!text) { doneRef.current = false; }
+      setCount(0);
       return;
     }
 

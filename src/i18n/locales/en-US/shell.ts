@@ -254,6 +254,7 @@ const enUSShell = {
       titleB: 'to a shared team memory.',
       lead: 'Share materials and build knowledge together, for classes and research groups.',
       tags: ['Co-build knowledge', 'Classroom tutoring', 'Research collaboration'],
+      tagDescs: ['Members co-edit and annotate materials, knowledge grows through collaboration', 'Teachers share materials, assign tasks, students collaborate online', 'Collaborate on research topics, sync materials and progress'],
       teamName: 'Cognitive Science Group',
       members: ['L', 'Z', 'C', '+6'],
       projectLabel: 'Project progress',
