@@ -167,20 +167,48 @@
 
 @media (max-width: 620px) {
   .bar {
+    max-width: 100%;
+    padding: 0 16px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 12px;
     min-height: 68px;
+  }
+
+  .brand {
+    gap: 8px;
   }
 
   .brandText {
     font-size: 18px;
   }
 
+  .betaTag {
+    display: none;
+  }
+
+  .navAuth {
+    gap: 4px;
+  }
+
   .authBtn {
     min-width: auto;
-    padding: 8px 10px;
+    padding: 8px 9px;
     font-size: 12px;
   }
 
   .githubBtn span {
+    display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .brandText {
+    display: none;
+  }
+}
+
+@media (max-width: 375px) {
+  :global(html[lang='en-US']) .brandText {
     display: none;
   }
 }
