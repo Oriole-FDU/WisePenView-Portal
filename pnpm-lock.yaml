@@ -17,6 +17,9 @@ importers:
       i18next:
         specifier: ^26.0.10
         version: 26.3.4(typescript@5.9.3)
+      lucide-react:
+        specifier: ^1.31.0
+        version: 1.31.0(react@19.2.7)
       react:
         specifier: ^19.2.0
         version: 19.2.7
@@ -1077,6 +1080,11 @@ packages:
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
+
+  lucide-react@1.31.0:
+    resolution: {integrity: sha512-G8u2eEtoHUnUa9f8lbvqDhCiORMnYLdUEo06EEG9MQvHQrInKcX3Pa2TH39MM5qyzRcWETxB0+aOwAPI1g1kEg==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   make-dir@5.1.0:
     resolution: {integrity: sha512-IfpFq6UM39dUNiphpA6uDezNx/AvWyhwfICWPR3t1VspkgkMZrL+Rk1RbN1bx+aeNYwOrqGJgEgV3yotk+ZUVw==}
@@ -2304,6 +2312,10 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
+
+  lucide-react@1.31.0(react@19.2.7):
+    dependencies:
+      react: 19.2.7
 
   make-dir@5.1.0:
     optional: true

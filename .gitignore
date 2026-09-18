@@ -18,6 +18,7 @@ dist-ssr
 .env.*.local
 
 # Editor files
+.claude/
 .cursor/
 .vscode/*
 !.vscode/extensions.json
