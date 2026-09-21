@@ -86,8 +86,14 @@ const enUSShell = {
       OTHER: 'Other',
     },
   },
+  language: {
+    switchTo: 'Switch to {{language}}',
+  },
   home: {
     navAria: 'Portal navigation',
+    brand: {
+      beta: 'Beta',
+    },
     nav: {
       core: 'Core Features',
       features: 'AI Assistant',

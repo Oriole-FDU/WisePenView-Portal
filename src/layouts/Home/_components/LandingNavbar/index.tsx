@@ -1,8 +1,23 @@
 import { LOGIN_URL, MAIN_SITE_URL, REGISTER_URL, openPortalLink } from '@/config/portalLinks';
 import logoIconAqua from '@/assets/logos/logo-icon-aqua.svg';
+import { changeAppLanguage } from '@/i18n';
+import { toSupportedLanguage } from '@/i18n/language';
+import type { SupportedLanguage } from '@/i18n/resources';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import styles from './style.module.less';
+
+/** 语言按钮上的短标签（展示的是点击后切换到的目标语言） */
+const LANGUAGE_SHORT_LABEL: Record<SupportedLanguage, string> = {
+  'zh-CN': '中',
+  'en-US': 'EN',
+};
+
+/** 语言名称 i18n key（取自 common 命名空间，始终展示语言自身名称） */
+const LANGUAGE_NAME_KEY: Record<SupportedLanguage, string> = {
+  'zh-CN': 'language.zhCN',
+  'en-US': 'language.enUS',
+};
 
 /** 滚动到门户区块（SPA 内 .root 为滚动容器，需 scrollIntoView 而非 #hash） */
 function scrollToSection(id: string) {
@@ -23,8 +38,34 @@ function IconGitHub() {
   );
 }
 
+function IconGlobe() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18" />
+      <path d="M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z" />
+    </svg>
+  );
+}
+
 function LandingNavbar() {
-  const { t } = useTranslation('shell');
+  const { t, i18n } = useTranslation(['shell', 'common']);
+
+  const currentLanguage = toSupportedLanguage(i18n.resolvedLanguage);
+  const nextLanguage: SupportedLanguage = currentLanguage === 'zh-CN' ? 'en-US' : 'zh-CN';
+  const switchLanguageLabel = t('language.switchTo', {
+    language: t(LANGUAGE_NAME_KEY[nextLanguage], { ns: 'common' }),
+  });
 
   const anchors = [
     { id: 'ai', label: t('home.nav.features') },
@@ -39,7 +80,7 @@ function LandingNavbar() {
       <div className={styles.brand}>
         <img className={styles.brandMark} src={logoIconAqua} alt="" aria-hidden="true" />
         <span className={styles.brandText}>WisePen</span>
-        <span className={styles.betaTag}>内测</span>
+        <span className={styles.betaTag}>{t('home.brand.beta')}</span>
       </div>
 
       <nav className={styles.navLinks} aria-label={t('home.navAria')}>
@@ -87,6 +128,16 @@ function LandingNavbar() {
           <IconGitHub />
           <span>{t('home.footer.github')}</span>
         </a>
+        <button
+          type="button"
+          className={clsx(styles.authBtn, styles.langBtn)}
+          onClick={() => void changeAppLanguage(nextLanguage)}
+          aria-label={switchLanguageLabel}
+          title={switchLanguageLabel}
+        >
+          <IconGlobe />
+          <span>{LANGUAGE_SHORT_LABEL[nextLanguage]}</span>
+        </button>
       </div>
     </div>
   );

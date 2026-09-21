@@ -26,6 +26,11 @@ export function resolveInitialLanguage(): SupportedLanguage {
   return normalizeLanguage(window.navigator.language) ?? DEFAULT_LANGUAGE;
 }
 
+/** 归一化运行时语言标识，无法识别时兜底为默认语言 */
+export function toSupportedLanguage(language: string | null | undefined): SupportedLanguage {
+  return normalizeLanguage(language) ?? DEFAULT_LANGUAGE;
+}
+
 export function persistLanguage(language: SupportedLanguage): void {
   if (typeof window === 'undefined') return;
   window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);

@@ -86,8 +86,14 @@ const zhCNShell = {
       OTHER: '其他',
     },
   },
+  language: {
+    switchTo: '切换到{{language}}',
+  },
   home: {
     navAria: '门户导航',
+    brand: {
+      beta: '内测',
+    },
     nav: {
       core: '核心功能',
       features: 'AI 助手',
