@@ -129,51 +129,15 @@ function TypewriterLine({ text, active, speed = 30 }: { text: string; active: bo
  * 重新激活时从第一行重新打字，实现每次循环重打。
  */
 function PromptTyping({ lines, active }: { lines: string[]; active: boolean }) {
-  const [lineIdx, setLineIdx] = useState(0);
-  const [count, setCount] = useState(0);
-  const linesRef = useRef(lines);
-  linesRef.current = lines;
-
-  /**
-   * @wisepen-manual-effect
-   * 执行时机：active 变化时启动/停止逐字计时器。
-   * 不可替代原因：打字机必须逐字定时推进，setInterval 是唯一可靠的时序来源。
-   * cleanup：清除计时器。
-   */
-  useEffect(() => {
-    // 未激活时整段清空，保证 step 0 是空白输入框
-    if (!active) {
-      setLineIdx(0);
-      setCount(0);
-      return;
-    }
-
-    let li = 0;
-    let n = 0;
-    const timer = setInterval(() => {
-      const len = linesRef.current[li].length;
-      n += 1;
-      if (n > len) {
-        li += 1;
-        if (li >= linesRef.current.length) {
-          clearInterval(timer);
-          return;
-        }
-        n = 1;
-        setLineIdx(li);
-      }
-      setCount(n);
-    }, 30);
-    return () => clearInterval(timer);
-  }, [active]);
+  const count = useTypewriter(lines.join(''), 30, active);
 
   return (
     <>
-      {lines.map((line, i) => (
-        <div className={styles.editorPromptLine} key={i}>
-          {i < lineIdx ? line : i === lineIdx ? line.slice(0, count) : ''}
-        </div>
-      ))}
+      {lines.map((line, i) => {
+        const offset = lines.slice(0, i).reduce((total, current) => total + current.length, 0);
+        const visible = line.slice(0, Math.max(0, count - offset));
+        return <div className={styles.editorPromptLine} key={i}>{visible}</div>;
+      })}
     </>
   );
 }

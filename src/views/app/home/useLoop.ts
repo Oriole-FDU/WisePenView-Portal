@@ -107,6 +107,7 @@ export function useLoop(
     };
     // 用 0ms 定时器归零起点，避免在 effect 体内同步 setState
     timer = setTimeout(() => {
+      setFading(false);
       setStep(0);
       tick(0);
     }, startDelay);
@@ -114,13 +115,8 @@ export function useLoop(
       stopped = true;
       if (timer) clearTimeout(timer);
     };
-  }, [paused, reduced, repeat, repeatDelay, fadeOut]);
-
-  // 挂起时重置 fading 状态，避免重新进入视口时残留淡出标记
-  useEffect(() => {
-    if (paused) setFading(false);
-  }, [paused]);
+  }, [paused, reduced, repeat, startDelay, repeatDelay, fadeOut]);
 
   // reduced 时不做循环演出，直接停在终态（全部可见）
-  return reduced ? [durations.length - 1, false] : [step, fading];
+  return reduced ? [durations.length - 1, false] : [step, paused ? false : fading];
 }
