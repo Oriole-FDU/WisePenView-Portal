@@ -20,9 +20,22 @@ export default function RollingNumber({
   interval = 2000,
   className,
 }: RollingNumberProps) {
+  return (
+    <RollingNumberValue
+      key={base}
+      base={base}
+      minIncrement={minIncrement}
+      maxIncrement={maxIncrement}
+      interval={interval}
+      className={className}
+    />
+  );
+}
+
+function RollingNumberValue({ base = 0, minIncrement = 1, maxIncrement = 5, interval = 2000, className }: RollingNumberProps) {
   const reduced = usePrefersReducedMotion();
   const [value, setValue] = useState(base);
-  const timerRef = useRef<ReturnType<typeof setInterval>>();
+  const timerRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   useEffect(() => {
     if (reduced) return;
@@ -31,11 +44,6 @@ export default function RollingNumber({
     }, interval);
     return () => clearInterval(timerRef.current);
   }, [reduced, interval, minIncrement, maxIncrement]);
-
-  // 外部 base 变化时重置
-  useEffect(() => {
-    setValue(base);
-  }, [base]);
 
   return <span className={className}>{reduced ? base : value}</span>;
 }
