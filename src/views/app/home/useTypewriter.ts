@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * 打字机效果 hook：逐字渲染文本，支持光标闪烁。
@@ -12,10 +12,7 @@ export function useTypewriter(
   speed: number = 30,
   active: boolean = true
 ): number {
-  const [count, setCount] = useState(0);
-  const idxRef = useRef(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const doneRef = useRef(false);
+  const [progress, setProgress] = useState({ text, active, count: 0 });
 
   /**
    * @wisepen-manual-effect
@@ -24,40 +21,18 @@ export function useTypewriter(
    * cleanup：清除计时器。
    */
   useEffect(() => {
-    // 无文本或未激活时冻结当前进度（不跳到全文），由外部阶段决定何时展示完整态
-    if (!active || !text) {
-      if (!text) { doneRef.current = false; }
-      setCount(0);
-      return;
-    }
+    if (!active || !text) return;
 
-    // 如果之前已打完，直接显示全文，不再重置重打
-    if (doneRef.current) {
-      setCount(text.length);
-      return;
-    }
-
-    idxRef.current = 0;
-    setCount(0);
-
-    timerRef.current = setInterval(() => {
-      idxRef.current += 1;
-      if (idxRef.current >= text.length) {
-        if (timerRef.current) clearInterval(timerRef.current);
-        setCount(text.length);
-        doneRef.current = true;
-        return;
-      }
-      setCount(idxRef.current);
+    const timer = setInterval(() => {
+      setProgress((previous) => {
+        const count = previous.text === text && previous.active === active ? previous.count + 1 : 1;
+        if (count >= text.length) clearInterval(timer);
+        return { text, active, count: Math.min(count, text.length) };
+      });
     }, speed);
 
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-      // 每次 active 变化（循环回到 step0 或离开视口暂停）都清除完成标记，
-      // 使下一次激活时重新打字，实现"每次循环重打"
-      doneRef.current = false;
-    };
+    return () => clearInterval(timer);
   }, [text, speed, active]);
 
-  return count;
+  return active && progress.active && progress.text === text ? progress.count : 0;
 }
